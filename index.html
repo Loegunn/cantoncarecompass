@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CantonCareCompass · 廣州養老政策速查</title>
+  <style>
+    :root{
+      --bg:#f4f6f5;
+      --panel:#ffffff;
+      --ink:#17211c;
+      --muted:#66736c;
+      --line:#dce4df;
+      --brand:#1f6b4f;
+      --brand-2:#e7f2ed;
+      --warn:#9a6500;
+      --warn-bg:#fff6de;
+      --danger:#a33a32;
+      --shadow:0 12px 35px rgba(25,58,43,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 85% 10%, rgba(31,107,79,.08), transparent 28%),
+        var(--bg);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","PingFang SC","Microsoft JhengHei","Microsoft YaHei",sans-serif;
+    }
+    button,input,select,textarea{font:inherit}
+    .app{min-height:100vh}
+    header{
+      padding:26px clamp(18px,4vw,58px) 20px;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      border-bottom:1px solid rgba(220,228,223,.8);
+      background:rgba(244,246,245,.88);backdrop-filter:blur(12px);
+      position:sticky;top:0;z-index:10;
+    }
+    .brand{display:flex;align-items:center;gap:13px}
+    .logo{
+      width:44px;height:44px;border-radius:14px;background:var(--brand);
+      display:grid;place-items:center;color:#fff;font-weight:800;font-size:20px;
+      box-shadow:0 8px 18px rgba(31,107,79,.2);
+    }
+    h1{margin:0;font-size:20px;letter-spacing:.02em}
+    .subtitle{margin-top:4px;color:var(--muted);font-size:13px}
+    .source-badge{
+      border:1px solid var(--line);background:#fff;border-radius:999px;
+      padding:9px 13px;color:var(--muted);font-size:12px;white-space:nowrap;
+    }
+    main{padding:28px clamp(18px,4vw,58px) 48px;max-width:1500px;margin:auto}
+    .notice{
+      background:#eef5f1;border:1px solid #d5e7de;border-radius:16px;
+      padding:14px 16px;margin-bottom:20px;display:flex;gap:10px;align-items:flex-start;
+      color:#315c49;font-size:13px;line-height:1.65;
+    }
+    .tabs{display:flex;gap:8px;margin-bottom:18px}
+    .tab{
+      border:1px solid var(--line);background:#fff;color:var(--muted);
+      padding:10px 16px;border-radius:11px;cursor:pointer;font-weight:700;
+    }
+    .tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+    .view{display:none}.view.active{display:block}
+    .workspace{
+      display:grid;grid-template-columns:minmax(330px, .9fr) minmax(420px, 1.35fr);
+      gap:20px;align-items:start;
+    }
+    .panel{
+      background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);overflow:hidden;
+    }
+    .panel-head{padding:20px 22px 13px;border-bottom:1px solid var(--line)}
+    .panel-head h2{font-size:17px;margin:0 0 6px}
+    .panel-head p{font-size:12px;color:var(--muted);margin:0;line-height:1.6}
+    .panel-body{padding:20px 22px}
+    .field{margin-bottom:16px}
+    label{display:block;font-size:13px;font-weight:750;margin-bottom:7px}
+    .hint{font-size:11px;color:var(--muted);font-weight:400;margin-left:5px}
+    textarea,select,input[type="number"],input[type="text"]{
+      width:100%;border:1px solid var(--line);border-radius:11px;background:#fff;
+      padding:11px 12px;color:var(--ink);outline:none;transition:.2s;
+    }
+    textarea{min-height:110px;resize:vertical;line-height:1.55}
+    textarea:focus,select:focus,input:focus{border-color:#7faf98;box-shadow:0 0 0 3px rgba(31,107,79,.09)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip input{display:none}
+    .chip span{
+      display:inline-block;padding:8px 11px;border-radius:999px;border:1px solid var(--line);
+      font-size:12px;color:var(--muted);cursor:pointer;background:#fff;transition:.18s;
+    }
+    .chip input:checked + span{background:var(--brand-2);border-color:#8fbea8;color:var(--brand);font-weight:700}
+    .extract-actions{
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:9px;
+    }
+    .auto-btn{border-color:#8fbea8!important;color:var(--brand)!important;font-weight:800}
+    .extract-box{
+      margin-top:11px;padding:12px 13px;border-radius:12px;
+      border:1px solid #cfe2d8;background:#f3f8f5;
+    }
+    .extract-box[hidden]{display:none}
+    .extract-head{
+      display:flex;justify-content:space-between;gap:10px;align-items:center;
+      font-size:12px;font-weight:850;color:#315c49;margin-bottom:8px;
+    }
+    .extract-state{font-size:11px;font-weight:650;color:var(--muted)}
+    .extract-chips{display:flex;gap:7px;flex-wrap:wrap}
+    .extract-chip{
+      background:#fff;border:1px solid #cfe2d8;color:#315c49;
+      padding:6px 9px;border-radius:999px;font-size:11px;font-weight:750;
+    }
+    .extract-note{
+      margin-top:8px;padding-top:8px;border-top:1px dashed #cfe2d8;
+      color:#765c1b;font-size:11px;line-height:1.55;
+    }
+
+    .actions{display:flex;gap:10px;margin-top:20px}
+    .primary,.secondary{
+      border:0;border-radius:12px;padding:12px 16px;cursor:pointer;font-weight:800;
+    }
+    .primary{background:var(--brand);color:#fff;flex:1}
+    .secondary{background:#edf1ef;color:#425048}
+    .result-toolbar{
+      padding:15px 22px;border-bottom:1px solid var(--line);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .result-toolbar strong{font-size:14px}
+    .small-btn{
+      border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;
+      cursor:pointer;color:var(--muted);font-size:12px;
+    }
+    .results{padding:18px 20px;min-height:560px}
+    .empty{
+      min-height:480px;display:grid;place-items:center;text-align:center;color:var(--muted);
+      padding:40px;
+    }
+    .empty-icon{
+      width:70px;height:70px;border-radius:22px;background:var(--brand-2);
+      display:grid;place-items:center;margin:0 auto 15px;font-size:28px;
+    }
+    .summary{
+      padding:14px 16px;border-radius:14px;background:#f7faf8;border:1px solid var(--line);
+      margin-bottom:14px;font-size:13px;line-height:1.65;
+    }
+    .result-card{
+      border:1px solid var(--line);border-radius:15px;padding:16px;margin-bottom:12px;background:#fff;
+    }
+    .card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .card-title{font-weight:850;font-size:15px}
+    .tag{
+      padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;
+    }
+    .tag.ok{background:var(--brand-2);color:var(--brand)}
+    .tag.need{background:var(--warn-bg);color:var(--warn)}
+    .card-desc{font-size:12px;color:var(--muted);margin:7px 0 12px;line-height:1.6}
+    .section-label{font-size:11px;font-weight:850;color:#54625b;margin:9px 0 5px;text-transform:uppercase;letter-spacing:.06em}
+    ul{margin:0;padding-left:18px}
+    li{font-size:12px;line-height:1.65;margin-bottom:3px}
+    .missing{color:#815e14}
+    .route{
+      margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:12px;color:#4e5d55;
+    }
+    .disclaimer{
+      margin-top:16px;border-top:1px solid var(--line);padding:16px 2px 2px;
+      font-size:12px;color:var(--muted);line-height:1.65;
+    }
+    .library-top{
+      display:flex;gap:12px;align-items:center;margin-bottom:16px;
+    }
+    .library-top input{max-width:520px}
+    .policy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .policy-card{
+      background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px;
+      min-height:190px;box-shadow:0 8px 24px rgba(25,58,43,.05);
+    }
+    .policy-no{font-size:11px;color:var(--brand);font-weight:900;letter-spacing:.1em}
+    .policy-card h3{font-size:15px;margin:8px 0}
+    .policy-card p{font-size:12px;color:var(--muted);line-height:1.65;margin:0 0 12px}
+    .policy-meta{font-size:11px;color:#526158;border-top:1px dashed var(--line);padding-top:10px}
+    .footer-note{margin-top:18px;font-size:12px;color:var(--muted)}
+    .detail-btn{
+      margin-top:12px;border:1px solid #9bc3af;background:#f2f8f5;color:var(--brand);
+      border-radius:10px;padding:8px 11px;cursor:pointer;font-size:12px;font-weight:800;
+    }
+    .detail-btn:hover{background:var(--brand-2)}
+    .policy-card{cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s}
+    .policy-card:hover{transform:translateY(-2px);border-color:#a9cdbb;box-shadow:0 12px 28px rgba(25,58,43,.10)}
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(13,28,21,.48);z-index:80;
+      display:flex;justify-content:flex-end;opacity:0;pointer-events:none;transition:.2s;
+    }
+    .modal-backdrop.open{opacity:1;pointer-events:auto}
+    .detail-drawer{
+      width:min(720px,94vw);height:100%;background:#fff;box-shadow:-18px 0 50px rgba(0,0,0,.18);
+      transform:translateX(100%);transition:.25s;overflow:auto;
+    }
+    .modal-backdrop.open .detail-drawer{transform:translateX(0)}
+    .drawer-head{
+      position:sticky;top:0;z-index:2;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);padding:20px 24px;display:flex;justify-content:space-between;gap:16px;
+    }
+    .drawer-kicker{font-size:11px;color:var(--brand);font-weight:900;letter-spacing:.1em}
+    .drawer-title{font-size:21px;font-weight:900;margin-top:5px}
+    .drawer-close{
+      width:38px;height:38px;border-radius:12px;border:1px solid var(--line);
+      background:#fff;cursor:pointer;font-size:20px;color:var(--muted);flex:0 0 auto;
+    }
+    .drawer-body{padding:22px 24px 36px}
+    .detail-section{
+      border:1px solid var(--line);border-radius:15px;padding:16px 17px;margin-bottom:14px;
+      background:#fff;
+    }
+    .detail-section h4{font-size:13px;margin:0 0 10px;color:#34483d}
+    .detail-section p{font-size:12px;line-height:1.75;color:#4f5e56;margin:0}
+    .detail-section ul{padding-left:19px}
+    .detail-section li{font-size:12px;line-height:1.72;margin-bottom:5px}
+    .contact-list{display:grid;gap:10px}
+    .contact-item{
+      border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:#fafcfb;
+    }
+    .contact-name{font-size:12px;font-weight:850;margin-bottom:5px}
+    .contact-line{font-size:12px;line-height:1.65;color:#54635b}
+    .contact-missing{
+      background:#fff8e7;border-color:#ead8a6;color:#775d18;
+    }
+    .source-note{
+      margin-top:16px;padding:13px 14px;border-radius:12px;background:#f5f7f6;
+      color:var(--muted);font-size:11px;line-height:1.65;
+    }
+    body.modal-open{overflow:hidden}
+    .source-card{
+      border:1px solid var(--line);border-radius:12px;padding:12px 13px;
+      background:#fafcfb;margin-bottom:9px;
+    }
+    .source-title{font-size:12px;font-weight:850;line-height:1.55}
+    .source-meta{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.55}
+    .source-status{
+      display:inline-block;margin-top:7px;padding:4px 7px;border-radius:999px;
+      font-size:10px;font-weight:800;background:var(--brand-2);color:var(--brand);
+    }
+    .source-status.warn{background:var(--warn-bg);color:var(--warn)}
+    .policy-alert{
+      padding:12px 13px;border:1px solid #ead8a6;background:#fff8e7;
+      border-radius:12px;color:#715717;font-size:11px;line-height:1.65;margin-bottom:14px;
+    }
+    .institution-toolbar{
+      display:grid;grid-template-columns:minmax(260px,1fr) 180px;gap:12px;margin-bottom:16px;
+    }
+    .institution-grid{
+      display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+    }
+    .institution-card{
+      background:#fff;border:1px solid var(--line);border-radius:15px;padding:16px;
+      box-shadow:0 8px 24px rgba(25,58,43,.05);display:flex;flex-direction:column;gap:9px;
+    }
+    .institution-card h3{font-size:14px;line-height:1.55;margin:0}
+    .institution-tags{display:flex;flex-wrap:wrap;gap:6px}
+    .institution-tag{
+      border-radius:999px;padding:5px 8px;background:#edf4f0;color:#3b6652;
+      font-size:10px;font-weight:800;
+    }
+    .institution-line{font-size:12px;color:#56645d;line-height:1.62}
+    .phone-link{
+      display:inline-flex;align-items:center;justify-content:center;text-decoration:none;
+      background:var(--brand);color:#fff;border-radius:10px;padding:9px 11px;
+      font-size:12px;font-weight:850;margin-top:auto;
+    }
+    .directory-note{
+      margin-bottom:15px;border:1px solid #d5e7de;background:#eef5f1;
+      border-radius:13px;padding:12px 14px;color:#3b5f4e;font-size:11px;line-height:1.65;
+    }
+    @media(max-width:1050px){.institution-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:650px){
+      .institution-toolbar{grid-template-columns:1fr}
+      .institution-grid{grid-template-columns:1fr}
+    }
+
+
+    @media(max-width:1000px){
+      .workspace{grid-template-columns:1fr}
+      .results{min-height:360px}.empty{min-height:300px}
+      .policy-grid{grid-template-columns:repeat(2,1fr)}
+      header{position:static}
+    }
+    @media(max-width:650px){
+      header{align-items:flex-start}.source-badge{display:none}
+      main{padding-top:18px}
+      .grid-2{grid-template-columns:1fr}
+      .policy-grid{grid-template-columns:1fr}
+      .panel-body,.panel-head{padding-left:16px;padding-right:16px}
+      .result-toolbar{padding-left:16px;padding-right:16px}
+      .results{padding:15px}
+    }
+    @media print{
+      header,.tabs,.input-panel,.notice,.small-btn{display:none!important}
+      main{padding:0}.workspace{display:block}.panel{box-shadow:none;border:0}
+      .results{padding:0}.result-card{break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo">穗</div>
+      <div>
+        <h1>CantonCareCompass　廣州養老政策速查</h1>
+        <div class="subtitle">依據政策檔案進行初步篩選，不使用檔案外資料</div>
+      </div>
+    </div>
+    <div class="source-badge">政策庫：已導入6組資料 · 最新至2026-07</div>
+  </header>
+
+  <main>
+    <div class="notice">
+      <div>ⓘ</div>
+      <div>
+        本原型會把描述中明確出現的年齡、戶籍、家庭情況、特殊身份及服務需求自動回填，再按已匯入政策檔案進行比對；無法確定的資料仍會列為「仍需確認」，不會自行假設。
+        目前為純前端規則版，所有識別均在本機瀏覽器完成。
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-view="matcher">個案匹配</button>
+      <button class="tab" data-view="library">政策庫</button>
+      <button class="tab" data-view="institutions">養老機構名錄</button>
+    </div>
+
+    <section id="matcher" class="view active">
+      <div class="workspace">
+        <div class="panel input-panel">
+          <div class="panel-head">
+            <h2>輸入個案資料</h2>
+            <p>系統會先從個案描述中抽取明確條件並回填到下方欄位；你可核對及修正後再匹配。</p>
+          </div>
+          <div class="panel-body">
+            <div class="field">
+              <label for="caseText">個案描述 <span class="hint">例如：78歲，廣州戶籍，獨居，行動不便</span></label>
+              <textarea id="caseText" placeholder="例如：60歲，廣州戶籍，孤寡老人，計劃生育特殊家庭，能走動但需要拐杖，希望申請家庭清潔、康復護理服務……"></textarea>
+              <div class="extract-actions">
+                <button type="button" class="small-btn auto-btn" id="extractBtn">自動識別並回填</button>
+                <span class="hint">支援簡體／繁體；只抽取文字中明確表達的條件</span>
+              </div>
+              <div class="extract-box" id="extractBox" hidden>
+                <div class="extract-head">
+                  <span>已識別內容</span>
+                  <span class="extract-state" id="extractState"></span>
+                </div>
+                <div class="extract-chips" id="extractChips"></div>
+                <div class="extract-note" id="extractNote" hidden></div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="age">年齡</label>
+                <input id="age" type="number" min="0" max="130" placeholder="未提供" />
+              </div>
+              <div class="field">
+                <label for="gender">性別</label>
+                <select id="gender">
+                  <option value="unknown">未提供</option>
+                  <option value="male">男</option>
+                  <option value="female">女</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="hukou">戶籍</label>
+                <select id="hukou">
+                  <option value="unknown">未提供</option>
+                  <option value="tianhe">廣州市天河區戶籍</option>
+                  <option value="guangzhou">廣州市其他區戶籍</option>
+                  <option value="non_gz">非廣州市戶籍</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="resident">是否在廣州市常住</label>
+                <select id="resident">
+                  <option value="unknown">未提供</option>
+                  <option value="yes">是</option>
+                  <option value="no">否</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="permit">是否持有效廣州居住證</label>
+                <select id="permit">
+                  <option value="unknown">未提供</option>
+                  <option value="yes">是</option>
+                  <option value="no">否</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="medical">廣州醫保待遇是否正常</label>
+                <select id="medical">
+                  <option value="unknown">未提供</option>
+                  <option value="yes">是</option>
+                  <option value="no">否</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="careLevel">照護需求／長護評估等級</label>
+                <select id="careLevel">
+                  <option value="unknown">未評估或未提供</option>
+                  <option value="1">1級</option>
+                  <option value="2">2級</option>
+                  <option value="3">3級</option>
+                  <option value="4">4級</option>
+                  <option value="5">5級</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="abilityLevel">老年人能力等級</label>
+                <select id="abilityLevel">
+                  <option value="unknown">未評估或未提供</option>
+                  <option value="0">0級</option>
+                  <option value="1">1級</option>
+                  <option value="2">2級</option>
+                  <option value="3">3級</option>
+                  <option value="4">4級</option>
+                  <option value="5">5級</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="careDuration">生活不能自理時長</label>
+                <select id="careDuration">
+                  <option value="unknown">未提供</option>
+                  <option value="lt6">少於6個月</option>
+                  <option value="ge6">已達或預期達6個月以上</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="living">居住／家庭情況</label>
+                <select id="living">
+                  <option value="unknown">未提供</option>
+                  <option value="alone">獨居</option>
+                  <option value="empty">空巢</option>
+                  <option value="elder_only">純老家庭</option>
+                  <option value="orphaned">孤寡</option>
+                  <option value="with_family">與家人同住</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="location">目前居住地點</label>
+                <select id="location">
+                  <option value="unknown">未提供</option>
+                  <option value="home">居家</option>
+                  <option value="institution">養老機構</option>
+                  <option value="hospital">醫院</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="economic">經濟／救助身份</label>
+                <select id="economic">
+                  <option value="unknown">未提供</option>
+                  <option value="special_poor">散居特困／特困供養</option>
+                  <option value="dibao">低保</option>
+                  <option value="low_income">低收入／低收</option>
+                  <option value="economic_difficult">經濟困難</option>
+                  <option value="normal">未屬上述類別</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="disability">失能／失智／殘疾情況</label>
+                <select id="disability">
+                  <option value="unknown">未提供</option>
+                  <option value="mild">輕度失能</option>
+                  <option value="moderate">中度失能</option>
+                  <option value="severe">重度失能</option>
+                  <option value="dementia">經醫院確診失智</option>
+                  <option value="severe_disabled">重度殘疾</option>
+                  <option value="disabled_1_4">1-4級持證殘疾</option>
+                  <option value="none">未見上述情況</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>其他特殊身份 <span class="hint">可多選</span></label>
+              <div class="chips">
+                <label class="chip"><input type="checkbox" name="special" value="family_planning"><span>計生特殊家庭</span></label>
+                <label class="chip"><input type="checkbox" name="special" value="only_child_parent"><span>獨生子女父母（2015年前生育）</span></label>
+                <label class="chip"><input type="checkbox" name="special" value="preferential"><span>優撫對象</span></label>
+                <label class="chip"><input type="checkbox" name="special" value="martyr"><span>烈士家屬</span></label>
+                <label class="chip"><input type="checkbox" name="special" value="model_worker"><span>市級以上勞模</span></label>
+                <label class="chip"><input type="checkbox" name="special" value="veteran"><span>殘疾軍人／退役軍人</span></label>
+                <label class="chip"><input type="checkbox" name="special" value="major_contribution"><span>為廣州作重大貢獻</span></label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>希望匹配的服務 <span class="hint">不選則顯示全部可能政策</span></label>
+              <div class="chips">
+                <label class="chip"><input type="checkbox" name="need" value="assessment"><span>能力評估</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="homecare"><span>上門照料</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="meal"><span>助餐送餐</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="daycare"><span>託管康復</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="allowance"><span>津貼保險</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="ltci"><span>長護險</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="renovation"><span>適老化改造</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="bed"><span>家庭養老牀位</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="institution"><span>入住養老院</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="emergency"><span>平安通</span></label>
+                <label class="chip"><input type="checkbox" name="need" value="health"><span>健康管理</span></label>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="primary" id="matchBtn">開始匹配</button>
+              <button class="secondary" id="resetBtn">清空</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="result-toolbar">
+            <strong id="resultCount">匹配結果</strong>
+            <div>
+              <button class="small-btn" id="copyBtn">複製結果</button>
+              <button class="small-btn" onclick="window.print()">列印</button>
+            </div>
+          </div>
+          <div class="results" id="results">
+            <div class="empty">
+              <div>
+                <div class="empty-icon">⌕</div>
+                <strong>尚未進行匹配</strong>
+                <p>填寫左側資料後，系統會列出可能適用的政策、判斷依據及缺失資料。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="library" class="view">
+      <div class="library-top">
+        <input type="text" id="policySearch" placeholder="搜尋政策名稱、服務內容或申請條件……" />
+        <span id="libraryCount" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+      <div class="policy-grid" id="policyGrid"></div>
+      <div class="footer-note">政策內容僅整理自已匯入的宣講檔案，未加入外部政策資料。</div>
+
+    </section>
+
+    <section id="institutions" class="view">
+      <div class="directory-note">
+        名錄整理自天河區民政局《天河區養老機構基本信息表（2026年4月16日更新）》。
+        “性質”按原表展示，不據此自行判斷是否屬於公辦機構輪候辦法所稱的市、區級公辦養老機構。
+        牀位及聯繫方式可能發生變化，聯繫前請再次核實。
+      </div>
+      <div class="institution-toolbar">
+        <input type="text" id="institutionSearch" placeholder="搜索機構名稱、街道、地址或電話……" />
+        <select id="institutionNature">
+          <option value="">全部性質</option>
+          <option value="公建民營">公建民營</option>
+          <option value="民辦">民辦</option>
+        </select>
+      </div>
+      <div id="institutionCount" style="font-size:12px;color:var(--muted);margin-bottom:12px"></div>
+      <div class="institution-grid" id="institutionGrid"></div>
+    </section>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="detailModal" aria-hidden="true">
+  <aside class="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-kicker" id="detailKicker">POLICY</div>
+        <div class="drawer-title" id="detailTitle">政策詳情</div>
+      </div>
+      <button class="drawer-close" id="detailClose" aria-label="關閉">×</button>
+    </div>
+    <div class="drawer-body" id="detailBody"></div>
+  </aside>
+</div>
+
+<script>
+const DISCLAIMER = "以上僅供初步參考，具體申請資格請以政策原文及經辦部門確認為準";
+
+
+
+const policySources = {
+  P01:[
+    {title:"《廣州市老年人照護需求綜合評估管理辦法（試行）》政策解讀",date:"2021-09-24",issuer:"廣州市衞生健康委員會",status:"官方政策解讀；辦法自2022-01-01施行"},
+    {title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}
+  ],
+  P02:[
+    {title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}
+  ],
+  P03:[{title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}],
+  P04:[{title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}],
+  P05:[{title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}],
+  P06:[
+    {title:"《【政策宣傳】廣州市長期護理保險》",date:"2026-07-06",issuer:"某街頤康中心；政策來源標註為“廣州醫保”公眾號",status:"2026年宣傳資料"}
+  ],
+  P07:[{title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}],
+  P08:[{title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}],
+  P09:[{title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}],
+  P10:[
+    {title:"《廣州市公辦養老機構入住評估輪候管理辦法》",date:"2026-06-18",issuer:"廣州市民政局",status:"穗民規字〔2026〕2號；自印發之日起施行，有效期5年"}
+  ],
+  P11:[
+    {title:"《天河區養老機構基本信息表（2026年4月16日更新）》",date:"2026-04-16",issuer:"天河區民政局",status:"官方機構名錄"},
+    {title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"入住指引宣講資料"}
+  ],
+  P12:[{title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}],
+  P13:[{title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"宣講資料"}],
+  P14:[
+    {title:"《某街頤康中心養老政策宣講》",date:"2026-07-14",issuer:"某街「雙百工程」社工站／某街頤康中心",status:"轉介指引"},
+    {title:"《天河區養老機構基本信息表（2026年4月16日更新）》",date:"2026-04-16",issuer:"天河區民政局",status:"官方機構名錄"}
+  ],
+  P15:[
+    {title:"《廣州市社區居家養老服務申辦指南》",date:"2020-03-05",issuer:"寧西街",status:"資料較舊，現行有效性及辦理平台需核實",warning:true}
+  ],
+  P16:[
+    {title:"《廣州市計劃生育獎勵和特別扶助辦法》（穗府辦規〔2022〕8號）",date:"2022-07-21",issuer:"廣州市人民政府辦公廳",status:"現行規範性文件"},
+    {title:"《廣州市城鎮獨生子女父母計劃生育獎勵金申請說明》",date:"2025-03-16",issuer:"公開申辦指引整理",status:"申辦條件及渠道參考"}
+  ]
+};
+
+const policyAlerts = {
+  P01:"資料差異提示：2021年廣州市衞健委官方解讀與原宣講PPT所列辦理時限存在差異。本版詳情以官方解讀列明的時限為主，並保留兩個來源日期。",
+  P06:"本資料中的線下諮詢地址及19924735883為白雲區某街頤康中心聯繫方式，不屬於天河區或某街經辦網點，因此未作為本地申請單位展示。",
+  P10:"本版已按2026年正式輪候管理辦法更新。該辦法規定申請條件、輪候排序及辦理時限，但未規定具體入住收費或“特困人員免費入住”標準，因此詳情不再將舊宣講中的收費表述作為本辦法內容。",
+  P15:"該申辦指南發佈於2020年，引用2016年管理辦法。資助金額、對象範圍、網上服務大廳名稱及辦理流程可能已調整，當前只作為檔案內歷史／參考資料展示。"
+};
+
+const institutions = [
+  {id:1,name:"廣州市天河區老人院",address:"廣州市天河區天年街399號",nature:"公建民營",beds:1298,phone:"020-31608815"},
+  {id:2,name:"廣州市天河區龍洞養老院",address:"廣州市天河區龍洞東路二橫路2號",nature:"民辦",beds:65,phone:"13640837064"},
+  {id:3,name:"廣州市燕嶺頤養院",address:"廣州市天河區粵墾路533號",nature:"民辦",beds:40,phone:"020-87293603"},
+  {id:4,name:"廣州福瑞馨養老院（有限合夥）",address:"廣州市天河區鰲魚崗大街6號負一層、4-15層",nature:"民辦",beds:636,phone:"020-85261111"},
+  {id:5,name:"廣州市天河區珠吉街養老院",address:"廣州市天河區珠吉街吉山新路街109號之一（5樓、3樓）",nature:"民辦",beds:70,phone:"13725409069"},
+  {id:6,name:"廣州市天河區岑村養老院",address:"廣州市天河區岑村東外街2號",nature:"民辦",beds:50,phone:"020-37349459"},
+  {id:7,name:"廣州市孝逸園養老院有限公司",address:"廣州市天河區劍源橫街1號之一、之二、之三、之四、之五",nature:"民辦",beds:222,phone:"020-38286886"},
+  {id:8,name:"廣州市天河區頤年養老院",address:"廣州市天河區元崗路399號之四101房-640房",nature:"民辦",beds:562,phone:"020-89222088"},
+  {id:9,name:"廣州椿萱茂養老服務有限公司",address:"廣州市天河區科林路18號G棟",nature:"民辦",beds:208,phone:"020-89855188"},
+  {id:10,name:"廣東頤康達醫療養老有限公司",address:"廣州市天河區廣和路27號首層自編102房",nature:"民辦",beds:33,phone:"020-88527473"},
+  {id:11,name:"廣州佳馨健康產業投資有限公司【天河區員村街綜合養老服務中心（頤康中心）】",address:"廣州市天河區員村二橫路昌樂園65號",nature:"民辦",beds:28,phone:"020-38342719"},
+  {id:12,name:"廣東嘉禧養老服務有限公司",address:"廣州市天河區龍怡路89號一層自編A123房",nature:"民辦",beds:15,phone:"020-38343700"},
+  {id:13,name:"鴻福霖養老產業集團有限公司【天河區興華街綜合養老服務中心（頤康中心）】",address:"廣州市天河區沙太南路95號首至三層",nature:"民辦",beds:28,phone:"020-85516354"},
+  {id:14,name:"廣州七喜集團有限公司【天河區五山街綜合養老服務中心（頤康中心）】",address:"廣州市天河區五山街道東莞莊路114號自編（3-7層）",nature:"民辦",beds:50,phone:"13128262757"},
+  {id:15,name:"廣州珠江家園健康養老服務有限公司【天河區長興街綜合養老服務中心（頤康中心）】",address:"廣州市天河區長興街嘉苑北大街9號101室、201室、301室、402室、404室",nature:"民辦",beds:92,phone:"020-32293580"},
+  {id:16,name:"廣州珠江家園健康養老服務有限公司【天河區鳳凰街綜合養老服務中心（頤康中心）】",address:"廣州市天河區鳳凰街漁東路88號5樓",nature:"民辦",beds:15,phone:"020-38810860"},
+  {id:17,name:"廣州珠江家園健康養老服務有限公司【天河區林和街綜合養老服務中心（頤康中心）】",address:"廣州市天河區林和西路169號首層103號鋪之一",nature:"民辦",beds:15,phone:"020-87580874"},
+  {id:18,name:"廣州清雅堂養老服務有限公司【天河區前進街綜合養老服務中心（頤康中心）】",address:"廣州市天河區宦溪北路26號之三301房",nature:"民辦",beds:10,phone:"020-89859194"}
+];
+
+const policyDetails = {
+  P01:{
+    intro:"面向本市常住的60週歲及以上老年人，按照全市統一規範評估其能力程度、健康狀況、社會支持、照護需求及照護等級。評估結果可作為享受補貼、接受居家社區養老服務、入住養老機構或醫養結合機構、享受長期護理保險待遇等的依據。",
+    conditions:[
+      "本市常住的60週歲及以上老年人。",
+      "符合廣州市長期護理保險申請條件、申請養老服務或政府補貼，以及其他需要評估的人員均可申請。",
+      "可由本人、監護人、代理人或代理機構提出申請。"
+    ],
+    materials:[
+      "2021年官方政策解讀未列出統一、完整的紙質材料清單。",
+      "申請人需按“穗好辦”專區或街（鎮）政務服務中心窗口的實際要求提交身份及代理關係等資料；網頁不得自行推定具體證件。"
+    ],
+    process:[
+      "申請：線上通過“穗好辦”APP中的“廣州市老年人照護需求綜合評估”專區；線下到街（鎮）政務服務中心業務窗口。",
+      "受理審核：評估機構在3個工作日內完成。",
+      "現場評估：自受理之日起5個工作日內組織。",
+      "複核與結論：現場評估後5個工作日內作出評估結論。",
+      "公示與送達：結論公示3個工作日；無異議後於5個工作日內送達申請人。",
+      "異議複評：收到評估結論7個工作日內、享受待遇前提出；衞生健康部門組織專家在10個工作日內完成複評，複評結論為最終結論。"
+    ],
+    services:[
+      "全市統一評估規範、統一申辦入口、統一申辦流程。",
+      "一次評估結果相互通認，減少因申請不同項目而重複評估。",
+      "評估人員由全市評估人員庫調選，並由評估質控員複核。"
+    ],
+    subsidy:[
+      "首次評估符合長期護理保險支付範圍的，由長護險基金按規定支付。",
+      "因申請養老服務或政府補貼產生的評估費用，按有關規定給予財政補助。",
+      "複評結論與首次評估一致，複評費用由申請人承擔；不一致，由首次評估機構承擔。"
+    ],
+    contacts:[
+      {name:"“穗好辦”APP",type:"線上申請渠道",detail:"進入“廣州市老年人照護需求綜合評估”專區提出申請。"},
+      {name:"各街（鎮）政務服務中心業務窗口",type:"線下申請單位",detail:"可現場申請辦理。"},
+      {name:"評估機構",type:"受理、現場評估及結論單位",detail:"由市醫療保障部門和市民政部門分別依法遴選確定。"},
+      {name:"具體窗口地址、電話及材料清單",type:"檔案信息",detail:"本次補充資料未列出各街鎮窗口的具體聯繫方式及完整材料清單。",missing:true}
+    ]
+  },
+  P02:{
+    intro:"為居家老年人提供基礎生活照料，主要解決日常清潔、個人照護、就醫陪伴及代辦等居家生活困難。",
+    conditions:[
+      "面向本行政區域內居住的60週歲及以上老年人。",
+      "不受戶籍限制，本地戶籍及常住居民均可按實際需要申請基礎居家養老服務。",
+      "檔案對失能、失智、孤寡、空巢、純老家庭、經濟困難及獨居老人等類別作出定義，用於進一步判斷資助或重點服務條件。"
+    ],
+    services:[
+      "上門助潔、助浴、洗滌及個人護理。",
+      "康復理療、協助進餐、陪伴就醫。",
+      "代購代辦及其他居家生活照料。"
+    ],
+    subsidy:[
+      "檔案本章節未載明生活照料服務的統一收費標準或具體補貼金額。",
+      "是否可使用居家社區養老服務資助，需結合照護評估和個人身份另行確認。"
+    ],
+    contacts:[
+      {name:"所在街鎮綜合養老服務中心（頤康中心）／居家養老服務機構",type:"諮詢及服務承接單位",detail:"可諮詢上門生活照料項目、服務安排及收費。"},
+      {name:"具體電話及地址",type:"檔案信息",detail:"檔案未載明統一聯繫電話或具體服務網點地址。",missing:true}
+    ]
+  },
+  P03:{
+    intro:"依託長者飯堂，為老年人提供製餐、配餐、分餐、就餐及送餐服務，並按照戶籍、年齡和特殊困難身份給予不同補貼。",
+    conditions:[
+      "普惠服務面向廣州市行政區域內居住的60週歲及以上老年人。",
+      "特殊老年羣體包括檔案列明的特困、低保、孤寡、獨居老人，以及重度殘疾人、70週歲及以上老人。",
+      "送餐上門需勾選照顧需求等級評估，評估結果為1—5級。"
+    ],
+    services:[
+      "長者飯堂堂食、配餐和分餐。",
+      "符合條件者可申請送餐上門。",
+      "線上申請可區分普通助餐配餐申請和助餐配餐資助對象申請。"
+    ],
+    subsidy:[
+      "特殊老年羣體：6元/餐，包含市級和區級就餐補貼。",
+      "天河區戶籍60—69週歲老人：4元/餐，包含市級和區級就餐補貼。",
+      "廣州市戶籍60週歲及以上非天河區老人，以及18—59週歲廣州市戶籍重度殘疾人：3元/餐市級補貼。",
+      "送餐補貼：照顧需求1—2級為2元/次，3—5級為4元/次。"
+    ],
+    contacts:[
+      {name:"廣州市為老服務綜合平台",type:"線上申請渠道",detail:"進入“養老業務大廳”→“老年人”，選擇助餐配餐申請或資助對象申請。"},
+      {name:"所在街鎮長者飯堂／助餐服務機構",type:"線下服務單位",detail:"可諮詢就餐、取餐、送餐範圍及實際餐費。"},
+      {name:"具體飯堂電話及地址",type:"檔案信息",detail:"檔案未列出各長者飯堂的具體聯繫方式。",missing:true}
+    ]
+  },
+  P04:{
+    intro:"通過日間託管、臨時託養和專業康復護理，為失能、失智、半失能及存在照護空檔的家庭提供照料和照護者喘息支持。",
+    conditions:[
+      "面向本市常住老年人，包括廣州市戶籍老人及持本市居住證的常住老人。",
+      "重點覆蓋失能、失智、半失能老人，以及獨居、空巢、高齡等有照護需要的家庭。",
+      "臨時託養主要解決家屬外出、突發情況或照護者臨時缺位造成的照護空檔。"
+    ],
+    services:[
+      "日間託管：日間生活照料、助餐助浴、精神慰藉及文娛活動。",
+      "臨時託養：包含夜間住宿的短期全託、安全看護及基礎健康管理。",
+      "康復護理：康復諮詢、器材輔助訓練、肢體功能訓練及中醫理療。",
+      "臨時託養原則上單次最長不超過7天。"
+    ],
+    subsidy:[
+      "廣州市居家社區養老服務資助對象，可按政策享受每人每月200—600元資助，用於抵扣日間託管、康復護理等費用。",
+      "檔案另列特困人員補貼標準：全自理50元/月（可擇高享受居家養老服務資助400元/人/月）、半自理750元/月、全護理1500元/月。"
+    ],
+    contacts:[
+      {name:"街鎮綜合養老服務中心（頤康中心）",type:"線下申請及服務單位",detail:"可申請日間託管、康復護理，並可諮詢臨時託養。"},
+      {name:"具備資質的養老機構",type:"臨時託養承接單位",detail:"本人或家屬可直接提出申請，經評估後安排短期入住。"},
+      {name:"廣州市為老服務綜合平台",type:"線上申請渠道",detail:"可在線申請日間託管或康復護理。"},
+      {name:"具體電話及地址",type:"檔案信息",detail:"除平安通外，檔案未列出各頤康中心或機構的具體聯繫電話。",missing:true}
+    ]
+  },
+  P05:{
+    intro:"面向具有廣州市戶籍的高齡長者按月發放長壽保健金。檔案正文載明從70週歲起分年齡檔次發放，並在百歲敬老月提供額外慰問金。",
+    conditions:[
+      "具有廣州市戶籍。",
+      "年滿70週歲及以上。",
+      "可通過線上或線下渠道進行信息確認；確認後按月主動發放。"
+    ],
+    services:[
+      "按月發放高齡津貼。",
+      "年滿80、90、100週歲當月，發放標準自動調整，無需再次申請。",
+      "本市戶籍100週歲以上老人每年敬老月可領取1000元慰問金。"
+    ],
+    subsidy:[
+      "70—79週歲：30元/月。",
+      "80—89週歲：100元/月。",
+      "90—99週歲：200元/月。",
+      "100週歲及以上：300元/月。",
+      "敬老月百歲老人慰問金：1000元。"
+    ],
+    contacts:[
+      {name:"戶籍所在地村（居）委會",type:"線下信息確認／申領單位",detail:"可辦理信息確認或補充申領。"},
+      {name:"“穗好辦”APP",type:"線上渠道",detail:"可進行信息確認及相關辦理。"},
+      {name:"“粵省事”小程序",type:"線上補充申領渠道",detail:"進入“長壽保健金申領”辦理。"},
+      {name:"廣州市為老服務平台",type:"線上補充申領渠道",detail:"可點擊“長壽保健金申領”辦理。"}
+    ]
+  },
+  P06:{
+    intro:"廣州市長期護理保險為符合條件的長期失能人員、延續護理人員及經評估需要規定設備的人員提供護理服務和費用保障。醫保關係暫停或終止時，長護險參保關係同步暫停或終止。",
+    conditions:[
+      "本市職工醫保參保人員，以及年滿18週歲的城鄉居民醫保參保人員，在參加廣州醫保的同時參加長護險。",
+      "正常享受醫保待遇，並按規定參加長護險及足額繳費。",
+      "長護險評估結果在有效期內。",
+      "享受長護險1—3級待遇：經醫療機構或康復機構規範診療，失能狀態持續6個月以上，並經本市照護需求綜合評估或參照評估符合條件。",
+      "延續護理：年滿60週歲，在本市醫保定點醫療機構因規定病種住院治療後病情穩定，經延續護理評估，出院後有醫療護理需求。",
+      "需在廣州市行政區域內接受長護險定點服務機構提供的護理服務併發生符合規定的費用。"
+    ],
+    materials:[
+      "申辦評估前準備：近期照片。",
+      "與失能、失智相關的近期病歷材料；材料應來自醫療機構或康復機構的規範診療。",
+      "辦理待遇入住／建牀登記時，需出示本人有效醫療保障憑證，包括醫保電子憑證。",
+      "宣傳資料未列出代理申請、身份證複印件或其他證明材料的完整清單。"
+    ],
+    process:[
+      "評估申請：“粵醫保”小程序→“查看更多”→“長護險”→“粵醫保長護專區”；或“穗好辦”APP→“長者專區”→“老年人照護需求綜合評估（初評）”→照護需求項目選擇“醫保”。",
+      "受理審核及評估實施：評估機構在13個工作日內完成。",
+      "結論公示：評估結果在粵醫保平台公示3個工作日。",
+      "結果告知：公示結束後由評估機構出具結論，並於5個工作日內告知申請人。",
+      "享受服務：申請人自行選擇長護險定點護理服務機構，按評估結論辦理入住／建牀登記並制定護理計劃。",
+      "費用結算：基金支付部分由定點機構記賬，個人負擔部分由參保人與機構結算，原則上每月結算一次。",
+      "評估有效期屆滿仍需待遇的，應在屆滿前60日內重新申請評估。"
+    ],
+    services:[
+      "生活照料服務及相關醫療護理服務。",
+      "符合條件的設備使用待遇。",
+      "長護險2—3級待遇人員在符合規定情形時，可由定點機構提供醫療護理服務。",
+      "住院或急診留觀期間，不可同時享受長護險待遇。"
+    ],
+    subsidy:[
+      "符合規定的牀位費、長護險服務項目範圍內的生活照料費、相關醫療護理費（含護理耗材費）及設備使用費，不設起付標準，由基金按待遇類別和標準支付。",
+      "本次宣傳資料的可提取文本未完整列出各待遇類別的具體支付比例或金額，因此網頁不補寫相關數字。"
+    ],
+    contacts:[
+      {name:"“粵醫保”小程序",type:"線上評估申請渠道",detail:"進入“長護險”及“粵醫保長護專區”辦理。"},
+      {name:"“穗好辦”APP",type:"線上評估申請渠道",detail:"進入“長者專區”及照護需求綜合評估服務，項目選擇“醫保”。"},
+      {name:"廣州市長護險定點服務機構",type:"護理服務及待遇登記單位",detail:"評估符合條件後，由參保人自行聯繫並辦理入住／建牀登記。"},
+      {name:"廣州市醫療保障局網站／“廣州醫保”微信公眾號",type:"定點機構名錄查詢",detail:"網站可在“醫保服務—醫療保障定點名單查詢”查看；公眾號可在“走近醫保—定點&藥價—長護險定點服務機構名單”查看。"},
+      {name:"天河區長護險定點機構電話及地址",type:"仍需補充",detail:"當前資料僅提供白雲區某街諮詢點，不是天河區經辦或服務機構名錄。",missing:true}
+    ]
+  },
+  P07:{
+    intro:"由政府統一出資為本市60週歲及以上戶籍老年人購買意外傷害保險，保障意外身故、傷殘、住院津貼及一定額度的意外傷害醫療。",
+    conditions:[
+      "廣州市戶籍且年滿60週歲：政府統保、免申即享。",
+      "非廣州市戶籍老人可按照檔案指引自行諮詢投保。"
+    ],
+    services:[
+      "意外身故及意外傷殘保障。",
+      "意外住院津貼。",
+      "意外傷害醫療門診／住院報銷。",
+      "檔案所列常見意外包括摔倒骨折、扭傷、燙傷、貓抓狗咬、魚刺卡到及交通事故等。",
+      "疾病類情況如感冒、心腦血管病、中風、高血壓等不屬於意外報銷範圍。"
+    ],
+    subsidy:[
+      "財政統保標準：20元/人/年。",
+      "意外身故／傷殘：最高6000元。",
+      "意外住院津貼：60元/天，單次限90天，全年限180天。",
+      "意外傷害醫療：300元，檔案註明自2025年9月1日起增加。"
+    ],
+    contacts:[
+      {name:"中國人壽服務網點",type:"投保及理賠諮詢單位",detail:"非本市戶籍老人可前往網點諮詢投保。"},
+      {name:"“銀齡安康行動”駐點服務站",type:"線下諮詢單位",detail:"可就近諮詢投保。"},
+      {name:"“廣州老齡”微信公眾號",type:"線上投保渠道",detail:"通過“銀齡安康”欄目辦理微信投保。"},
+      {name:"中國人壽具體服務電話",type:"檔案信息",detail:"檔案僅寫明可撥打中國人壽服務電話，但未列出具體號碼。",missing:true}
+    ]
+  },
+  P08:{
+    intro:"通過居家環境施工改造和老年用品配置，減少跌倒、濕滑及衞浴使用等風險，提升老人居家安全和便利程度。",
+    conditions:[
+      "資助以家庭為單位，同一住房有2名或以上符合條件老人，按一戶計算。",
+      "第一類：散居特困；低保／低收入家庭中的高齡、失能或殘疾老人。",
+      "第二類：失能孤寡／優撫老人、計生特殊家庭老人。",
+      "第三類：除第一、第二類外的散居特困、低保低收、優撫孤寡及計生特扶家庭老人。"
+    ],
+    services:[
+      "居家適老化諮詢和方案設計。",
+      "入戶玄關、客廳、臥室、衞生間、廚房及陽台等區域改造。",
+      "地面防滑、扶手、適老衞浴、智能監測。",
+      "康復護理類老年用品配置。"
+    ],
+    subsidy:[
+      "第一類資助對象：最高3000元/戶。",
+      "第二類資助對象：最高1500元/戶。",
+      "第三類資助對象：最高1000元/戶。"
+    ],
+    contacts:[
+      {name:"申請受理單位／線上入口",type:"檔案信息",detail:"本宣講檔案未列明居家適老化改造的統一申請單位、電話或線上辦理入口。",missing:true},
+      {name:"街道、社區或街鎮頤康中心",type:"初步諮詢建議",detail:"網頁僅可提示向本地基層服務單位核實；具體受理資格仍須以經辦部門確認為準。"}
+    ]
+  },
+  P09:{
+    intro:"由符合條件的養老服務組織在老人家中實施適老化、智能化改造，並持續提供專業上門照護，使老人居家獲得類似機構的專業服務。",
+    conditions:[
+      "本市範圍內60週歲及以上、居住在家中且有養老照護需求的老年人。",
+      "入住養老機構、綜合養老服務中心全託區或醫院的老人不納入。",
+      "建牀資助對象需為廣州市戶籍，並同時滿足照護需求等級1—5級、老年人能力等級1級以上等條件。"
+    ],
+    services:[
+      "適老化改造。",
+      "智能化改造。",
+      "專業化上門服務。"
+    ],
+    subsidy:[
+      "一次性建牀資助：按實際改造費用給予，最高3000元/牀；同一老人3年內只計1次。",
+      "照護需求1級：200元/人/月，需每月上門服務不少於8天、累計不少於12小時。",
+      "照護需求2級及以上：300元/人/月，需每月上門服務不少於10天、累計不少於15小時。",
+      "照護需求4—5級：500元/人/月，需每月上門服務不少於16天、累計不少於24小時。",
+      "同一住所共同使用的設施設備不重複資助；已通過其他途徑獲得的同類改造項目不得重複納入。"
+    ],
+    contacts:[
+      {name:"符合條件的家庭養老牀位服務機構／養老服務組織",type:"建牀及服務承接單位",detail:"由服務機構實施改造並持續提供上門服務。"},
+      {name:"具體申請入口、機構名單及電話",type:"檔案信息",detail:"本宣講檔案未列明統一申請入口、機構名單或聯繫電話。",missing:true}
+    ]
+  },
+  P10:{
+    intro:"2026年《廣州市公辦養老機構入住評估輪候管理辦法》適用於政府財政投資建設的市、區級公辦養老機構。申請人通過統一平台進入特殊保障、優先或普通輪候通道，並按照護需求等級及申請時間排序。",
+    conditions:[
+      "具有廣州市戶籍且年滿60週歲。",
+      "無傳染病；或傳染病已治癒；或經傳染病專科醫院診斷為無傳染性。",
+      "無患嚴重精神障礙且無發生傷害自身、危害他人安全行為。",
+      "已按規定接受老年人照護需求綜合評估，且評估結果在有效期內。",
+      "為廣州作出重大貢獻、居住在本市行政區域內且持有效廣州居住證的老人，可不受戶籍限制。"
+    ],
+    materials:[
+      "申請人需通過廣州市為老服務綜合平台提出申請，並同步簽署承諾書。",
+      "申請優先輪候通道的經濟困難老人，需要授權核查本人及家庭成員在申請前12個自然月內的家庭收入、財產等經濟狀況。",
+      "2026年辦法未逐項列出身份證、戶口簿、體檢報告等上傳材料清單；相關文書樣式由市民政部門另行制定。"
+    ],
+    process:[
+      "申請：通過廣州市為老服務綜合平台申請；線上申請困難者，可由鎮街頤康中心或公辦養老機構協助。",
+      "初步核實：區民政部門在收到申請後5個工作日內完成，並納入相應輪候通道。",
+      "牀位發佈：公辦機構產生空餘牀位後2個工作日內發佈牀位信息。",
+      "資格核實通知：機構在3個工作日內通過電話、短信等通知申請人在7個工作日內到場核實。",
+      "資格複核：對核實結果有異議，應在3個工作日內通過平台申請複核；民政部門在5個工作日內完成，複核結果為最終結果。",
+      "辦理入住：機構按完成資格核實時間及牀位類別通知申請人在5個工作日內辦理入住。",
+      "因緊急住院治療無法按期辦理的，可憑醫療機構診斷結論適當延期，一般不超過90個工作日。"
+    ],
+    services:[
+      "特殊保障通道：面向有集中供養意願的特困人員。",
+      "優先輪候通道：面向經濟困難的孤寡、失能、高齡老人，計生特殊家庭老人，低保及低保邊緣家庭老人，老年烈士遺屬、享受撫卹補助的老年優撫對象、榮立三等功以上老年退役軍人、重大貢獻老人等。",
+      "普通輪候通道：其他符合條件的老人；其中孤寡老人和重度認知障礙老人優先於本通道其他老人。",
+      "同一通道按照護需求評估等級由高至低排序；等級相同按平台申請時間先後排序。",
+      "符合條件的夫妻，可按評估等級較高一方共同申請輪候。"
+    ],
+    subsidy:[
+      "2026年輪候管理辦法未規定具體牀位費、護理費、免費入住或減免標準。",
+      "入住收費應另依據公辦養老機構收費、特困供養或相關救助政策核實，網頁不把舊宣講中的收費表述併入本辦法。"
+    ],
+    contacts:[
+      {name:"廣州市為老服務綜合平台",type:"正式輪候申請及信息更新渠道",detail:"申請輪候、簽署承諾書、更新個人信息及提出資格複核。"},
+      {name:"鎮街綜合養老服務中心（頤康中心）",type:"協助申請單位",detail:"為線上申請存在困難的老人提供協助。"},
+      {name:"公辦養老機構",type:"協助申請、牀位發佈、資格核實及入住單位",detail:"按平台輪候隊列通知申請人。"},
+      {name:"區民政部門",type:"初步核實、異議複核及投訴處理",detail:"負責本區申請及所轄公辦機構相關事務。"},
+      {name:"市家庭經濟核對和養老服務指導中心",type:"輪候事務性工作單位",detail:"負責相關事務及無法聯繫申請人的公告銜接。"},
+      {name:"天河區具體公辦機構名單",type:"仍需確認",detail:"當前天河區機構表列有“廣州市天河區老人院”，性質標註為“公建民營”；是否屬於本辦法所稱市、區級公辦養老機構，資料未直接説明。",missing:true}
+    ]
+  },
+  P11:{
+    intro:"民辦養老機構可通過線上平台或直接到機構現場申請，服務形式包括全託、日託和臨時託養，並可根據老人情況制定個性化照護方案。",
+    conditions:[
+      "檔案未列出統一的年齡、戶籍、健康或經濟資格標準。",
+      "實際入住條件需結合意向機構要求、長者身體狀況、家庭預算及體檢結果確認。"
+    ],
+    services:[
+      "全託、日託及臨時託養。",
+      "醫療護理、康復訓練和精神慰藉。",
+      "適老化傢俱、智能安防及文娛設施。"
+    ],
+    subsidy:[
+      "檔案未列明民辦養老機構統一補貼標準。",
+      "收費標準由不同機構按其服務項目確定，建議現場比較。"
+    ],
+    contacts:[
+      {name:"天河區養老機構基本信息名錄",type:"本地機構查詢",detail:"網頁新增“養老機構名錄”欄目，收錄天河區民政局2026年4月16日更新的18家機構名稱、地址、性質、牀位數及聯繫電話。"},
+      {name:"廣州市為老服務綜合平台",type:"線上諮詢／申請渠道",detail:"可在線填報基本信息及申請需求。"},
+      {name:"意向養老機構",type:"現場諮詢及入住辦理單位",detail:"建議先電話確認收住對象、牀位、收費、體檢及護理等級，再攜材料實地考察。"},
+      {name:"林和街綜合養老服務中心（頤康中心）",type:"林和街本地養老服務諮詢點",detail:"地址：廣州市天河區林和西路169號首層103號鋪之一；電話：020-87580874。"}
+    ]
+  },
+  P12:{
+    intro:"平安通運用通訊及智能設備，為居家老人提供緊急呼援、定位、主動關懷、心理慰藉、諮詢轉介及健康監測等服務。",
+    conditions:[
+      "年滿60週歲。",
+      "在廣州市行政區域內常住。",
+      "具有廣州市戶籍，或持有廣州市有效居住證。"
+    ],
+    services:[
+      "基礎服務：緊急呼援、定位、諮詢轉介、心理慰藉、定期關懷及提示。",
+      "拓展服務：健康數據監測、智慧醫療對接及個性化服務。"
+    ],
+    subsidy:[
+      "第一類對象由政府全額資助，包括檔案列明的困難家庭獨居老人、純老家庭成員、1—4級持證殘疾人、散居特困，以及部分勞模、殘疾軍人和烈士家屬等。",
+      "第二類對象政府資助70%，包括60週歲及以上失能老人、獨居老人，以及廣州市戶籍或持有效居住證的80週歲及以上老人。",
+      "其他符合基礎申請條件的老人可自費。",
+      "政府採購價上限：服務套餐30元/月；設備維護20元/年。"
+    ],
+    contacts:[
+      {name:"天河區平安通24小時服務熱線",type:"電話諮詢／預約",detail:"020-83310681"},
+      {name:"廣東有線廣播電視網絡有限公司",type:"天河區線下服務網點",detail:"廣州市天河區天府路293號；廣州市天河區黃埔大道中71號。"},
+      {name:"廣州市為老服務綜合平台",type:"線上申報渠道",detail:"按平台指引填寫個人信息並上傳證明材料。"}
+    ]
+  },
+  P13:{
+    intro:"為65週歲及以上常住老人提供免費的基本健康管理和醫養結合服務，包括健康評估、體檢、醫療保健、健康指導和慢病管理。",
+    conditions:[
+      "廣州市65週歲及以上常住老人。"
+    ],
+    services:[
+      "生活方式和健康狀況評估。",
+      "體格檢查及輔助檢查。",
+      "醫療保健、健康指導及慢病管理。",
+      "醫養結合相關服務。"
+    ],
+    subsidy:[
+      "檔案明確載明上述服務免費提供。",
+      "檔案未列出具體檢查項目頻次或額外收費項目。"
+    ],
+    contacts:[
+      {name:"鄉鎮衞生院",type:"預約及服務單位",detail:"可預約獲取相關健康管理服務。"},
+      {name:"社區衞生服務中心",type:"預約及服務單位",detail:"可預約獲取相關健康管理服務。"},
+      {name:"具體社區衞生服務中心電話及地址",type:"檔案信息",detail:"檔案未列出各網點聯繫方式。",missing:true}
+    ]
+  },
+  P14:{
+    intro:"根據老人具體需要，將其轉介至低保低收、殘疾人、優撫、公租房、法律援助、保險、平安通或長護險等對應經辦部門。",
+    conditions:[
+      "需先明確老人所需辦理的服務類型及相應身份條件。"
+    ],
+    services:[
+      "低保低收服務轉介。",
+      "殘疾人、老年優待、優撫、公租房、公證和法律援助轉介。",
+      "平安通、穗歲康／銀齡安康、長期護理保險轉介。"
+    ],
+    subsidy:[
+      "本章節為部門轉介指引，未列統一補貼金額。"
+    ],
+    contacts:[
+      {name:"社區居委會／街道政務服務中心",type:"低保低收服務",detail:"負責相關諮詢及轉介。"},
+      {name:"街道殘聯",type:"殘疾人服務",detail:"負責殘疾人相關服務。"},
+      {name:"街道政務服務中心",type:"老年優待／公租房服務",detail:"負責相關事項。"},
+      {name:"街道退役軍人服務站",type:"優撫對象服務",detail:"負責優撫相關服務。"},
+      {name:"區公證局",type:"公證服務",detail:"負責公證事項。"},
+      {name:"街道司法所／社區居委會",type:"法律援助",detail:"負責法律援助轉介。"},
+      {name:"廣東有線廣播電視服務網點",type:"平安通服務",detail:"負責平安通相關服務。"},
+      {name:"中國人壽服務網點",type:"穗歲康／銀齡安康險",detail:"負責保險諮詢及辦理。"},
+      {name:"長護險定點機構",type:"長期護理保險服務",detail:"負責長護險服務承接。"}
+    ]
+  },
+
+  P15:{
+    intro:"該指南介紹了廣州市社區居家養老政府服務資助的對象、資助標準、辦理程序和材料。由於發佈時間為2020年，網頁將其作為檔案內參考資料展示，不自動認定其標準在2026年仍然有效。",
+    conditions:[
+      "具有廣州市戶籍、在廣州市行政區域內居住、年滿60週歲。",
+      "第一類包括：散居特困；低保、低收入困難、享受撫卹補助的優撫對象中失能的；上述部分對象及80週歲以上老人中獨居或僅與持證重度殘疾子女共同居住的；市級以上勞模中失能的；100週歲以上的；計劃生育特別扶助人員。",
+      "第二類包括：本人月養老金低於廣州市最低工資標準、自願負擔一半費用，且屬於80週歲以上或純老家庭（含孤寡、獨居）的失能老人。"
+    ],
+    materials:[
+      "身份證。",
+      "戶口簿。",
+      "與申請身份對應的其他證件，包括但不限於農村五保供養證、低保低收證、優撫證、計生扶助證、殘疾證、勞模證書等。",
+      "網上上傳原件掃描件或圖片，格式為JPG、PDF或PNG。"
+    ],
+    process:[
+      "申請人登錄當時的“廣州市居家養老網上服務大廳”填報資料並上傳材料。",
+      "街道（鎮）社區居家養老服務部在5個工作日內完成初核，並提交區居家養老服務指導中心。",
+      "區指導中心在10個工作日內完成資助資格核實及照顧需求等級評估。",
+      "核實同意後，由養老管理員制定服務方案並協商選擇服務機構；不同意的，由街鎮部門通知並説明理由。",
+      "對結果有異議，可向區指導中心申請複核；區指導中心會同街鎮在收到申請後15個工作日內組織複核。",
+      "無上網條件或無電腦操作能力者，可攜材料到街鎮社區居家養老服務部，由養老管理員協助網上申請。"
+    ],
+    services:[
+      "政府服務資助用於購買社區居家養老服務。",
+      "資助當月使用，不能滾存。",
+      "不得用於發放現金、購置實物或支付醫療費用。",
+      "同時符合兩項及以上標準的，按較高資助標準執行。"
+    ],
+    subsidy:[
+      "第一類資助對象：400元/月；經評估為重度失能的，增加護理資助200元/月。",
+      "第二類資助對象：最高200元/月。",
+      "上述金額來自2020年指南，2026年是否仍適用必須另行核實。"
+    ],
+    contacts:[
+      {name:"街道（鎮）社區居家養老服務部",type:"協助申請及初核單位",detail:"可協助無上網條件或操作困難的老人辦理。"},
+      {name:"區居家養老服務指導中心",type:"資格核實、評估及複核單位",detail:"負責資助資格核實和照顧需求等級評估。"},
+      {name:"林和街綜合養老服務中心（頤康中心）",type:"林和街本地諮詢點",detail:"地址：廣州市天河區林和西路169號首層103號鋪之一；電話：020-87580874。是否為現行資助正式受理點需再確認。"},
+      {name:"現行線上平台及最新受理部門",type:"仍需補充",detail:"2020指南所列“廣州市居家養老網上服務大廳”是否仍為現行入口，當前資料未確認。",missing:true}
+    ]
+  },
+  P16:{
+    intro:"面向本市戶籍獨生子女父母的按月獎勵金，依據《廣州市計劃生育獎勵和特別扶助辦法》（穗府辦規〔2022〕8號）發放。同一辦法亦規定計劃生育家庭特別扶助金標準。",
+    conditions:[
+      "2015年12月31日以前生育（含依法收養）子女，男年滿60週歲、女年滿55週歲的廣州市戶籍居民。",
+      "符合生育政策終身只生育了一個子女（該子女沒有同胞兄弟姐妹或者同父異母、同母異父兄弟姐妹）的夫妻。",
+      "或終身沒有生育、只在婚後依法收養了一個子女的夫妻。",
+      "符合上述條件、婚姻狀況發生變動後沒有再婚再生育的一方，可參照申領。",
+      "再婚前沒有生育子女、再婚後生育一個子女且沒有與未成年繼子女形成撫養關係的一方，可參照申領。",
+      "已按計生獎勵政策享受退休金加發5%或一次性獎勵金的除外。"
+    ],
+    materials:[
+      "申請人居民身份證。",
+      "申請人居民戶口簿。",
+      "結婚證。",
+      "銀行卡／存摺（通過市社保發放養老金的申請人，獎勵金隨市社保賬戶發放，無需提供）。",
+      "市外遷入人員另需提供遷出地街道（鎮、鄉）以上衞生計生部門出具的計劃生育和獎勵待遇享受情況證明。"
+    ],
+    process:[
+      "可於「穗好辦」APP或「粵省事」平台預申報：首頁進入特色服務／民生一站式服務／衞健服務，或直接搜索「城鎮獨生子女父母計劃生育獎勵」。",
+      "預申報後應當在7個工作日內向初審單位遞交申請、辦理受理手續；逾期沒有辦理的，初審單位可以終止該申請。",
+      "由戶籍所在地居（村）委會進行初審。",
+      "街（鎮）審核確認資格。",
+      "獎勵金自獎勵對象到齡的次月開始計發。"
+    ],
+    services:[
+      "按月發放獎勵金至個人賬戶，直至本人死亡為止。",
+      "符合條件且到齡後從市外遷入的人員，遷入廣州市後可領獎勵金，獎勵金自遷入當月開始計發。"
+    ],
+    subsidy:[
+      "獨生子女父母計劃生育獎勵金：每人每月150元。",
+      "計劃生育家庭特別扶助金——獨生子女死亡的家庭：每人每月1100元。",
+      "計劃生育家庭特別扶助金——獨生子女傷病殘的家庭：每人每月780元。",
+      "上述標準以後根據經濟社會發展情況，由市政府決定適時調整。"
+    ],
+    contacts:[
+      {name:"戶籍所在地居（村）民委員會",type:"初審單位",detail:"負責受理、初審、打印、確認、公示。"},
+      {name:"街道（鎮）衞健／計生部門",type:"審核確認單位",detail:"負責資格審核確認。"},
+      {name:"「穗好辦」APP／「粵省事」小程序",type:"線上預申報渠道",detail:"搜索「城鎮獨生子女父母計劃生育獎勵」進入辦理。"},
+      {name:"天河區具體受理窗口地址及電話",type:"仍需補充",detail:"檔案未載明天河區各街道具體辦事窗口聯繫方式，請向戶籍所在地居委會查詢。",missing:true}
+    ]
+  }
+};
+
+const policies = [
+  {
+    id:"P01", no:"01", name:"老年人照護需求評估", category:["assessment"],
+    desc:"為60周歲及以上常住老年人評估失能及照護需求等級，結果可作為服務匹配依據。",
+    route:"「穗好辦」APP、廣州市為老服務綜合平台，或戶籍所在地街（鎮）服務中心。",
+    keywords:"評估 失能 等級 照護需求 60歲 常住",
+    evaluate:p=>{
+      let b=[],m=[];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，符合「60周歲及以上」條件。`);
+      else if(p.age===null) m.push("年齡是否已滿60周歲。");
+      else return null;
+      if(p.resident==="yes") b.push("個案已明確在廣州市常住。");
+      else if(p.resident==="unknown") m.push("是否屬廣州市常住老年人。");
+      else return null;
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou") b.push("個案為廣州市戶籍，可再核實評估費用資助檔次。");
+      else if(p.hukou==="unknown") m.push("戶籍情況（影響評估費用資助標準）。");
+      return result(b,m,[
+        "可自願申請老年人照護需求評估。",
+        "檔案載明：符合社區居家養老服務資助條件的戶籍老人，入戶評估補貼200元/次；其餘戶籍60歲及以上老人按全額標準50%資助。"
+      ]);
+    }
+  },
+  {
+    id:"P02", no:"02", name:"生活照料服務", category:["homecare"],
+    desc:"提供上門助潔、助浴、洗滌、個人護理、康復理療、陪伴就醫及代辦等服務。",
+    route:"向所在區域的居家社區養老服務機構或街鎮頤康中心諮詢。",
+    keywords:"生活照料 上門 助潔 助浴 洗滌 護理 就醫 代辦",
+    evaluate:p=>{
+      let b=[],m=[];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，符合「60周歲及以上」條件。`);
+      else if(p.age===null) m.push("年齡是否已滿60周歲。");
+      else return null;
+      if(p.resident==="yes") b.push("個案在廣州市行政區域內居住。");
+      else if(p.resident==="unknown") m.push("是否在廣州市行政區域內居住。");
+      else return null;
+      if(["alone","empty","elder_only","orphaned"].includes(p.living)) b.push(`個案屬${label("living",p.living)}，檔案對此類服務對象有明確定義。`);
+      if(["mild","moderate","severe","dementia"].includes(p.disability)) b.push(`個案已提供${label("disability",p.disability)}情況。`);
+      return result(b,m,["可按實際需要申請基礎居家養老生活照料服務；檔案明確不受戶籍限制。"]);
+    }
+  },
+  {
+    id:"P03", no:"03", name:"助餐配餐服務", category:["meal"],
+    desc:"依託長者飯堂提供製餐、配餐、分餐、就餐及送餐服務。",
+    route:"廣州市為老服務綜合平台 → 養老業務大廳 → 老年人 → 助餐配餐申請。",
+    keywords:"助餐 配餐 長者飯堂 送餐 餐費 補貼",
+    evaluate:p=>{
+      let b=[],m=[],benefits=[];
+      const special = ["special_poor","dibao"].includes(p.economic) ||
+                      ["alone","orphaned"].includes(p.living) ||
+                      ["severe_disabled"].includes(p.disability) ||
+                      (p.age!==null && p.age>=70);
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，符合老年助餐普惠服務年齡條件。`);
+      else if(p.age===null) m.push("年齡是否已滿60周歲。");
+      else if(!(p.age>=18 && p.age<=59 && p.hukou!=="unknown" && p.disability==="severe_disabled")) return null;
+      if(p.resident==="yes") b.push("個案在廣州市居住。");
+      else if(p.resident==="unknown") m.push("是否在廣州市行政區域內居住。");
+      else return null;
+      if(special){
+        b.push("個案符合檔案列明的特殊老年羣體條件之一。");
+        benefits.push("可能按特殊老年羣體標準享受6元/餐（含市級和區級）就餐補貼。");
+      } else if(p.hukou==="tianhe" && p.age!==null && p.age>=60 && p.age<=69){
+        b.push("個案為天河區戶籍且年齡60-69歲。");
+        benefits.push("可能享受4元/餐（含市級和區級）就餐補貼。");
+      } else if(p.hukou==="guangzhou" && p.age!==null && p.age>=60){
+        b.push("個案為廣州市非天河區戶籍且年滿60歲。");
+        benefits.push("可能享受3元/餐市級補貼。");
+      } else if(p.hukou==="unknown"){
+        m.push("戶籍所在地（影響餐費補貼標準）。");
+      }
+      if(p.careLevel!=="unknown"){
+        const lv=Number(p.careLevel);
+        b.push(`已提供照護需求等級${lv}級。`);
+        benefits.push(lv<=2 ? "如申請送餐上門，檔案載明送餐補貼2元/次。" : "如申請送餐上門，檔案載明送餐補貼4元/次。");
+      } else {
+        m.push("如需送餐上門，需確認照護需求等級是否為1-5級。");
+      }
+      benefits.unshift("可申請助餐配餐服務。");
+      return result(b,m,benefits);
+    }
+  },
+  {
+    id:"P04", no:"04", name:"日間託管／臨時託養／康復護理", category:["daycare"],
+    desc:"提供日間照料、短期全託、康復訓練及照護者喘息支持。",
+    route:"日間託管／康復護理可經為老服務平台或服務機構申請；臨時託養向頤康中心或合資格機構申請。",
+    keywords:"日間託管 臨時託養 康復護理 喘息 短期入住",
+    evaluate:p=>{
+      let b=[],m=[];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，屬老年人羣體。`);
+      else if(p.age===null) m.push("年齡是否已滿60周歲。");
+      else return null;
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou") b.push("個案為廣州市戶籍常住老人。");
+      else if(p.permit==="yes" && p.resident==="yes") b.push("個案持有效居住證並在廣州市常住。");
+      else {
+        if(p.resident==="unknown") m.push("是否在廣州市常住。");
+        if(p.hukou==="non_gz" && p.permit==="unknown") m.push("非戶籍長者是否持有效廣州居住證。");
+      }
+      if(["mild","moderate","severe","dementia"].includes(p.disability)) b.push(`個案有${label("disability",p.disability)}情況，屬檔案重點覆蓋對象。`);
+      if(["alone","empty"].includes(p.living)) b.push(`個案屬${label("living",p.living)}，屬檔案重點覆蓋對象。`);
+      return result(b,m,[
+        "可按需要諮詢日間託管、臨時託養或康復護理。",
+        "臨時託養原則上單次最長不超過7天。",
+        "如屬廣州市居家社區養老服務資助對象，檔案載明可按政策享受每月200-600元資助；是否屬資助對象仍需經辦部門核實。"
+      ]);
+    }
+  },
+  {
+    id:"P05", no:"05", name:"長壽保健金", category:["allowance"],
+    desc:"面向廣州市戶籍高齡長者的按月津貼，檔案載明70周歲起分級發放。",
+    route:"「穗好辦」APP、粵省事、廣州市為老服務平台，或戶籍所在地村（居）委會進行信息確認／申領。",
+    keywords:"長壽保健金 高齡 津貼 70 80 90 100",
+    evaluate:p=>{
+      let b=[],m=[],benefits=[];
+      if(p.age===null) m.push("年齡。");
+      else if(p.age<70) return null;
+      else b.push(`個案年齡為${p.age}歲，達到檔案所列70周歲起發放標準。`);
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou") b.push("個案為廣州市戶籍。");
+      else if(p.hukou==="unknown") m.push("是否具有廣州市戶籍。");
+      else return null;
+      if(p.age!==null){
+        if(p.age>=100) benefits.push("檔案標準：300元/月；每年敬老月另向本市戶籍百歲以上老人發放1000元慰問金。");
+        else if(p.age>=90) benefits.push("檔案標準：200元/月。");
+        else if(p.age>=80) benefits.push("檔案標準：100元/月。");
+        else if(p.age>=70) benefits.push("檔案標準：30元/月。");
+      }
+      benefits.unshift("符合條件者可進行信息確認，檔案載明為主動發放。");
+      return result(b,m,benefits);
+    }
+  },
+  {
+    id:"P06", no:"06", name:"長期護理保險", category:["ltci"],
+    desc:"為達到一定護理需求等級的長期失能人員提供生活照料及醫療護理保障。",
+    route:"先與本市護理服務機構達成服務意向，再經「粵醫保」「穗好辦」或醫保經辦窗口申請。",
+    keywords:"長護險 長期護理保險 失能 醫保 護理 6個月",
+    evaluate:p=>{
+      let b=[],m=[];
+      if(p.age!==null && p.age>=18) b.push(`個案年齡為${p.age}歲，達到18周歲以上條件。`);
+      else if(p.age===null) m.push("年齡是否已滿18周歲。");
+      else return null;
+      if(p.resident==="yes") b.push("個案常住地在廣州市行政轄區內。");
+      else if(p.resident==="unknown") m.push("常住地是否在廣州市行政轄區內。");
+      else return null;
+      if(p.medical==="yes") b.push("已明確廣州職工或居民醫保待遇正常。");
+      else if(p.medical==="unknown") m.push("廣州職工或居民醫保待遇是否正常。");
+      else return null;
+      if(p.careDuration==="ge6") b.push("生活不能自理已達或預期達6個月以上。");
+      else if(p.careDuration==="unknown") m.push("生活不能自理是否已達或預期達6個月以上。");
+      else return null;
+      if(["1","2","3"].includes(p.careLevel)) b.push(`已提供長護評估${p.careLevel}級，屬檔案列明的1-3級範圍。`);
+      else if(p.careLevel==="unknown") m.push("長護評估是否達1-3級。");
+      else return null;
+      m.push("病情是否基本穩定；檔案未提供具體病種判斷資料。");
+      return result(b,m,["可能申請長期護理保險的生活照料及醫療護理服務。"]);
+    }
+  },
+  {
+    id:"P07", no:"07", name:"銀齡安康行動", category:["allowance"],
+    desc:"由政府為本市60周歲及以上戶籍老人統一購買的意外傷害保險。",
+    route:"本市戶籍免申即享；非本市戶籍可向中國人壽網點、駐點服務站或「廣州老齡」微信欄目諮詢自費投保。",
+    keywords:"銀齡安康 意外險 身故 傷殘 住院津貼",
+    evaluate:p=>{
+      let b=[],m=[],benefits=[];
+      if(p.age===null) m.push("年齡是否已滿60周歲。");
+      else if(p.age<60) return null;
+      else b.push(`個案年齡為${p.age}歲，達到60周歲以上。`);
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou"){
+        b.push("個案為廣州市戶籍，檔案載明免申即享、由政府統保。");
+        benefits.push("財政統保標準20元/人/年；意外身故／傷殘最高6000元；意外住院津貼60元/天（全年限180天）。");
+        benefits.push("檔案另載明意外傷害醫療門診／住院報銷300元（2025-09-01增加）。");
+      } else if(p.hukou==="non_gz"){
+        b.push("個案為非廣州市戶籍。");
+        benefits.push("可按檔案指引諮詢自費投保，不屬政府統保免申即享範圍。");
+      } else m.push("是否具有廣州市戶籍（影響是否政府統保）。");
+      return result(b,m,benefits);
+    }
+  },
+  {
+    id:"P08", no:"08", name:"居家適老化改造", category:["renovation"],
+    desc:"提供防滑、扶手、適老衞浴、智能監測及康復護理用品配置等改造。",
+    route:"檔案未列明統一申請入口，建議向戶籍所在地街道、社區或頤康中心核實。",
+    keywords:"適老化 改造 扶手 防滑 衞浴 智能監測",
+    evaluate:p=>{
+      let b=[],m=[],benefits=["可諮詢居家適老化改造及老年用品配置服務。"];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，屬老年人。`);
+      else if(p.age===null) m.push("年齡是否屬老年人範圍。");
+      else return null;
+      if(p.economic==="special_poor" || ["dibao","low_income"].includes(p.economic)){
+        if(["mild","moderate","severe","severe_disabled","disabled_1_4"].includes(p.disability) || (p.age!==null && p.age>=80)){
+          b.push("個案屬特困／低保／低收入家庭，且提供了高齡、失能或殘疾條件。");
+          benefits.push("可能屬第一類資助對象，檔案所列最高資助3000元/戶。");
+        } else {
+          m.push("是否屬高齡、失能或殘疾老人（用於判斷第一類資助）。");
+        }
+      }
+      if(p.living==="orphaned" && ["mild","moderate","severe"].includes(p.disability)){
+        b.push("個案屬失能孤寡老人。");
+        benefits.push("可能屬第二類資助對象，檔案所列最高資助1500元/戶。");
+      }
+      if(p.special.includes("preferential") || p.special.includes("family_planning")){
+        b.push("個案具有優撫或計生特殊家庭身份。");
+        benefits.push("資助類別需再結合失能、孤寡等條件判定；檔案所列第二類最高1500元/戶、第三類最高1000元/戶。");
+      }
+      if(!b.some(x=>x.includes("特困")||x.includes("失能孤寡")||x.includes("優撫"))){
+        m.push("是否屬散居特困、低保／低收入、高齡、失能、殘疾、孤寡、優撫或計生特殊家庭等資助類別。");
+      }
+      return result(b,m,benefits);
+    }
+  },
+  {
+    id:"P09", no:"09", name:"家庭養老牀位", category:["bed"],
+    desc:"在家中進行適老化、智能化改造並提供專業上門照護，形成「類機構」牀位。",
+    route:"向符合條件的家庭養老牀位服務機構或街鎮頤康中心諮詢。",
+    keywords:"家庭養老牀位 居家 類機構 智能化 上門照護",
+    evaluate:p=>{
+      let b=[],m=[],benefits=["可諮詢設立家庭養老牀位及專業上門服務。"];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，符合60周歲及以上。`);
+      else if(p.age===null) m.push("年齡是否已滿60周歲。");
+      else return null;
+      if(p.location==="home") b.push("個案目前居家，符合家庭養老牀位的居住場景。");
+      else if(["institution","hospital"].includes(p.location)) return null;
+      else m.push("目前是否居家；入住養老機構或醫院者不納入。");
+      if(["mild","moderate","severe","dementia"].includes(p.disability) || p.careLevel!=="unknown") b.push("個案已提供養老照護需求相關情況。");
+      else m.push("是否有明確養老照護需求。");
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou"){
+        b.push("個案為廣州市戶籍，可進一步核對建牀資助條件。");
+        if(p.careLevel!=="unknown" && p.abilityLevel!=="unknown" && Number(p.abilityLevel)>=1){
+          benefits.push("如由服務機構設牀並核實合格、連續服務滿6個月，檔案載明一次性建牀資助最高3000元/牀。");
+          const lv=Number(p.careLevel);
+          if(lv===1) benefits.push("照護需求1級：檔案載明200元/人/月，並需達到相應上門天數及時長。");
+          else if(lv>=2 && lv<=3) benefits.push("照護需求2級及以上：檔案載明300元/人/月，並需達到相應上門天數及時長。");
+          else if(lv>=4) benefits.push("照護需求4-5級：檔案載明500元/人/月，並需達到相應上門天數及時長。");
+        } else {
+          m.push("照護需求等級是否為1-5級、老年人能力等級是否為1級以上（影響建牀資助）。");
+        }
+      } else if(p.hukou==="unknown") m.push("是否為廣州市戶籍（影響建牀資助）。");
+      return result(b,m,benefits);
+    }
+  },
+  {
+    id:"P10", no:"10", name:"公辦養老機構輪候", category:["institution"],
+    desc:"面向符合條件的長者申請公辦養老機構入住輪候，特殊困難羣體可進入優先通道。",
+    route:"廣州市為老服務綜合平台 → 公辦養老機構入住輪候申請。",
+    keywords:"公辦養老院 機構 輪候 入住 特困 優先",
+    evaluate:p=>{
+      let b=[],m=[],benefits=[];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，符合60周歲及以上。`);
+      else if(p.age===null) m.push("年齡是否已滿60周歲。");
+      else return null;
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou") b.push("個案具有廣州市戶籍，符合一般申請戶籍條件。");
+      else if(p.special.includes("major_contribution") && ["mild","moderate","severe"].includes(p.disability) && p.resident==="yes"){
+        b.push("個案已提供「為廣州作重大貢獻、失能、在本市居住」條件，檔案載明此類可不受戶籍限制。");
+      } else if(p.hukou==="unknown") m.push("是否具有廣州市戶籍；或是否符合重大貢獻失能老人例外條件。");
+      else return null;
+      m.push("是否無暴力傾向、精神狀況穩定、無傳染性疾病，並自願入住。");
+      if(p.economic==="special_poor"){
+        b.push("個案屬特困老人。");
+        benefits.push("可能進入特殊保障通道最優先隊列，檔案載明可無償入住。");
+      } else if(["dibao","low_income","economic_difficult"].includes(p.economic) ||
+                ["orphaned"].includes(p.living) ||
+                ["mild","moderate","severe","dementia"].includes(p.disability) ||
+                p.special.some(x=>["family_planning","preferential","martyr","veteran","major_contribution"].includes(x))){
+        b.push("個案具有檔案列明的優先輪候相關條件之一。");
+        benefits.push("可能進入優先輪候通道；具體排序及收費仍需核實。");
+      } else benefits.push("如符合全部基本條件，可進入普通輪候通道。");
+      return result(b,m,benefits);
+    }
+  },
+  {
+    id:"P11", no:"11", name:"民辦養老機構入住指引", category:["institution"],
+    desc:"提供線上申請或直接到意向機構考察、評估及辦理入住的指引。",
+    route:"廣州市為老服務綜合平台，或攜身份證、體檢報告等直接到意向機構諮詢。",
+    keywords:"民辦養老院 入住 全託 日託 臨時託養",
+    evaluate:p=>{
+      let b=[],m=[];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，可按長者需求諮詢民辦養老機構。`);
+      else if(p.age===null) m.push("年齡及長者身份。");
+      else return null;
+      m.push("意向機構的具體入住條件、體檢要求、收費及牀位情況；檔案未列統一資格標準。");
+      return result(b,m,["可經平台或直接向意向機構諮詢全託、日託或臨時託養。"]);
+    }
+  },
+  {
+    id:"P12", no:"12", name:"平安通緊急援助", category:["emergency"],
+    desc:"提供緊急呼援、定位、主動關懷、心理慰藉、諮詢轉介及健康監測等服務。",
+    route:"天河區平安通24小時服務熱線：020-83310681；亦可經廣州市為老服務綜合平台申報。",
+    keywords:"平安通 緊急呼援 定位 關懷 智能設備",
+    evaluate:p=>{
+      let b=[],m=[],benefits=["可申請平安通基礎或拓展服務。"];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，符合60周歲及以上。`);
+      else if(p.age===null) m.push("年齡是否已滿60周歲。");
+      else return null;
+      if(p.resident==="yes") b.push("個案在廣州市行政區域內常住。");
+      else if(p.resident==="unknown") m.push("是否在廣州市行政區域內常住。");
+      else return null;
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou") b.push("個案具有廣州市戶籍。");
+      else if(p.permit==="yes") b.push("個案持有本市有效居住證。");
+      else if(p.hukou==="unknown" && p.permit==="unknown") m.push("是否具有廣州市戶籍或有效廣州居住證。");
+      else return null;
+      const full = p.economic==="special_poor" ||
+                   (["dibao","low_income"].includes(p.economic) && ["alone","elder_only"].includes(p.living)) ||
+                   (["dibao","low_income"].includes(p.economic) && p.disability==="disabled_1_4") ||
+                   p.special.some(x=>["model_worker","martyr"].includes(x));
+      const seventy = ["mild","moderate","severe","disabled_1_4"].includes(p.disability) ||
+                       p.living==="alone" || (p.age!==null && p.age>=80);
+      if(full){
+        b.push("個案符合檔案所列政府全額資助類別之一。");
+        benefits.push("可能由政府全額資助，個人零負擔。");
+      } else if(seventy){
+        b.push("個案符合檔案所列政府資助70%類別之一。");
+        benefits.push("可能由政府資助70%，個人承擔30%。");
+      } else {
+        benefits.push("如不屬資助類別，可按自費對象申請。");
+        if(p.economic==="unknown"||p.disability==="unknown"||p.living==="unknown") m.push("經濟身份、失能／殘疾或獨居情況（影響資助比例）。");
+      }
+      return result(b,m,benefits);
+    }
+  },
+  {
+    id:"P13", no:"13", name:"老年健康與醫養結合服務", category:["health"],
+    desc:"為65周歲及以上常住老人免費提供健康評估、體檢、健康指導及慢病管理等服務。",
+    route:"預約前往鄉鎮衞生院或社區衞生服務中心。",
+    keywords:"健康管理 體檢 慢病 醫養結合 65歲 免費",
+    evaluate:p=>{
+      let b=[],m=[];
+      if(p.age!==null && p.age>=65) b.push(`個案年齡為${p.age}歲，符合65周歲及以上。`);
+      else if(p.age===null) m.push("年齡是否已滿65周歲。");
+      else return null;
+      if(p.resident==="yes") b.push("個案為廣州市常住老人。");
+      else if(p.resident==="unknown") m.push("是否為廣州市常住老人。");
+      else return null;
+      return result(b,m,["可預約免費生活方式與健康狀況評估、體格及輔助檢查、健康指導、慢病管理等服務。"]);
+    }
+  },
+  {
+    id:"P14", no:"14", name:"社區居家養老轉介服務", category:["homecare","allowance","institution","health","emergency"],
+    desc:"按低保低收、殘疾人、優撫、公租房、法律援助、平安通、保險及長護險等需要轉介相應部門。",
+    route:"依服務類型轉介至社區居委會、街道政務服務中心、街道殘聯、退役軍人服務站、司法所、中國人壽或長護險定點機構等。",
+    keywords:"轉介 低保 殘疾 優撫 公租房 法律援助 平安通 長護險",
+    evaluate:p=>{
+      let b=[],m=[],benefits=[];
+      if(["dibao","low_income"].includes(p.economic)){b.push("個案已提供低保／低收身份。");benefits.push("可轉介社區居委會或街道政務服務中心。");}
+      if(["severe_disabled","disabled_1_4"].includes(p.disability)){b.push("個案已提供殘疾情況。");benefits.push("可轉介街道殘聯。");}
+      if(p.special.includes("preferential")){b.push("個案為優撫對象。");benefits.push("可轉介街道退役軍人服務站。");}
+      if(p.medical==="yes" && ["1","2","3"].includes(p.careLevel)){b.push("個案已提供醫保及長護評估資料。");benefits.push("可轉介長護險定點機構。");}
+      if(!b.length) return null;
+      return result(b,m,benefits);
+    }
+  },
+
+  {
+    id:"P15", no:"15", name:"社區居家養老服務資助（2020申辦指南）", category:["homecare"],
+    desc:"根據2020年申辦指南，對符合戶籍、年齡、困難身份、失能及家庭情況的老人提供社區居家養老服務資助；現行有效性需核實。",
+    route:"指南所列受理部門為區居家養老服務指導中心及街鎮社區居家養老服務部；現行線上入口需再確認。",
+    keywords:"社區居家養老 服務資助 400元 600元 低保 特困 計生扶助 勞模 養老金",
+    evaluate:p=>{
+      let b=[],m=[],benefits=[];
+      if(p.age!==null && p.age>=60) b.push(`個案年齡為${p.age}歲，達到指南所列60週歲以上條件。`);
+      else if(p.age===null) m.push("年齡是否已滿60週歲。");
+      else return null;
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou") b.push("個案為廣州市戶籍。");
+      else if(p.hukou==="unknown") m.push("是否具有廣州市戶籍。");
+      else return null;
+      if(p.resident==="yes") b.push("個案已明確在廣州市行政區域內居住。");
+      else if(p.resident==="unknown") m.push("是否在廣州市行政區域內居住。");
+      else return null;
+
+      const disabled=["mild","moderate","severe"].includes(p.disability);
+      let first=false;
+      if(p.economic==="special_poor"){first=true;b.push("個案屬於散居特困／特困供養類別。");}
+      if(["dibao","low_income"].includes(p.economic) && disabled){first=true;b.push("個案屬於低保或低收入困難家庭，且已提供失能情況。");}
+      if((["dibao","low_income"].includes(p.economic) || (p.age!==null&&p.age>=80)) && p.living==="alone"){
+        first=true;b.push("個案符合指南列明的困難／高齡獨居相關條件。");
+      }
+      if(p.special.includes("model_worker") && disabled){first=true;b.push("個案為市級以上勞模且已提供失能情況。");}
+      if(p.age!==null && p.age>=100){first=true;b.push("個案年滿100週歲。");}
+      if(p.special.includes("family_planning")){first=true;b.push("個案為計劃生育特別扶助人員。");}
+
+      if(first) benefits.push("按2020指南，可能屬於第一類資助對象：400元/月；重度失能另增加200元/月。");
+      else {
+        if(disabled && (p.age!==null&&p.age>=80 || ["elder_only","orphaned","alone"].includes(p.living))){
+          m.push("本人月養老金是否低於廣州市最低工資標準，以及是否自願負擔一半費用（用於判斷第二類資助）。");
+          benefits.push("如同時滿足養老金及自付條件，按2020指南可能屬於第二類資助對象，最高200元/月。");
+        } else {
+          m.push("是否符合特困、低保低收、優撫、勞模、百歲、計生特扶，或第二類失能及家庭條件。");
+        }
+      }
+      m.push("該2020指南在2026年是否仍現行有效，以及資助金額和辦理平台是否已調整。");
+      return result(b,m,benefits);
+    }
+  },
+  {
+    id:"P16", no:"16", name:"獨生子女父母計劃生育獎勵金", category:["allowance"],
+    desc:"面向2015年12月31日前生育（含依法收養）且終身只有一個子女的廣州市戶籍居民，男年滿60週歲、女年滿55週歲可按月申領。",
+    route:"戶籍所在地居（村）委初審、街（鎮）審核確認；亦可於「粵省事」「穗好辦」平台預申報，預申報後須於7個工作日內向初審單位遞交申請辦理受理手續。",
+    keywords:"獨生子女 獨生子女父母 計劃生育獎勵金 150元 光榮證 計生獎勵",
+    evaluate:p=>{
+      let b=[],m=[],benefits=[];
+      if(!p.special.includes("only_child_parent")){
+        if(p.age!==null && ((p.gender==="male"&&p.age>=60)||(p.gender==="female"&&p.age>=55)||(p.gender==="unknown"&&p.age>=55))){
+          m.push("是否為2015年12月31日前生育（含依法收養）且終身只生育一個子女的獨生子女父母。");
+        } else return null;
+      } else {
+        b.push("個案已標示為獨生子女父母（2015年前生育）。");
+      }
+
+      if(p.hukou==="tianhe"||p.hukou==="guangzhou") b.push("個案為廣州市戶籍。");
+      else if(p.hukou==="unknown") m.push("是否具有廣州市戶籍。");
+      else return null;
+
+      if(p.age===null){ m.push("年齡。"); }
+      else if(p.gender==="male"){
+        if(p.age>=60) b.push(`個案為男性、年齡${p.age}歲，達到男年滿60週歲條件。`);
+        else return null;
+      }
+      else if(p.gender==="female"){
+        if(p.age>=55) b.push(`個案為女性、年齡${p.age}歲，達到女年滿55週歲條件。`);
+        else return null;
+      }
+      else {
+        if(p.age>=60) b.push(`個案年齡為${p.age}歲，已達男女兩種到齡標準。`);
+        else if(p.age>=55) m.push("性別（女年滿55週歲、男年滿60週歲，到齡標準不同）。");
+        else return null;
+      }
+
+      benefits.push("檔案標準：每人每月150元，自到齡次月起計發，至本人死亡為止。");
+      benefits.push("同屬計生特殊家庭者另有特別扶助金：獨生子女死亡家庭每人每月1100元、獨生子女傷病殘家庭每人每月780元。");
+      m.push("是否已按計生獎勵政策享受退休金加發5%或一次性獎勵（已享受者不重複發放），以及是否已持《獨生子女父母光榮證》。");
+      return result(b,m,benefits);
+    }
+  }
+];
+
+function result(basis, missing, benefits){
+  return {status: missing.length ? "need" : "ok", basis, missing, benefits};
+}
+function selected(name){return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(x=>x.value)}
+function label(group, val){
+  const maps={
+    living:{alone:"獨居",empty:"空巢",elder_only:"純老家庭",orphaned:"孤寡",with_family:"與家人同住"},
+    disability:{mild:"輕度失能",moderate:"中度失能",severe:"重度失能",dementia:"經醫院確診失智",severe_disabled:"重度殘疾",disabled_1_4:"1-4級持證殘疾",none:"未見失能／失智／殘疾"}
+  };
+  return maps[group]?.[val]||val;
+}
+function profile(){
+  const ageRaw=document.getElementById("age").value;
+  return {
+    age:ageRaw===""?null:Number(ageRaw),
+    gender:document.getElementById("gender").value,
+    hukou:document.getElementById("hukou").value,
+    resident:document.getElementById("resident").value,
+    permit:document.getElementById("permit").value,
+    medical:document.getElementById("medical").value,
+    careLevel:document.getElementById("careLevel").value,
+    abilityLevel:document.getElementById("abilityLevel").value,
+    careDuration:document.getElementById("careDuration").value,
+    living:document.getElementById("living").value,
+    location:document.getElementById("location").value,
+    economic:document.getElementById("economic").value,
+    disability:document.getElementById("disability").value,
+    special:selected("special"),
+    needs:selected("need"),
+    text:document.getElementById("caseText").value.trim()
+  }
+}
+const SIMP2TRAD={"与":"與","专":"專","业":"業","东":"東","两":"兩","严":"嚴","个":"個","临":"臨","为":"為","义":"義","乐":"樂","乡":"鄉","书":"書","买":"買","于":"於","云":"雲","产":"產","仅":"僅","从":"從","价":"價","众":"眾","优":"優","伙":"夥","会":"會","传":"傳","伤":"傷","体":"體","余":"餘","侧":"側","倾":"傾","偿":"償","关":"關","兴":"興","兹":"茲","养":"養","内":"內","写":"寫","军":"軍","农":"農","决":"決","况":"況","准":"準","减":"減","凤":"鳳","凭":"憑","击":"擊","划":"劃","则":"則","别":"別","制":"製","剑":"劍","办":"辦","务":"務","动":"動","劳":"勞","区":"區","医":"醫","华":"華","协":"協","单":"單","卧":"臥","厅":"廳","历":"歷","压":"壓","厨":"廚","参":"參","双":"雙","变":"變","号":"號","员":"員","周":"週","咨":"諮","响":"響","团":"團","园":"園","围":"圍","国":"國","图":"圖","场":"場","垦":"墾","处":"處","备":"備","复":"復","娱":"娛","宁":"寧","实":"實","审":"審","对":"對","寻":"尋","导":"導","寿":"壽","将":"將","尔":"爾","层":"層","届":"屆","属":"屬","岁":"歲","岗":"崗","岭":"嶺","布":"佈","并":"併","广":"廣","庄":"莊","床":"牀","库":"庫","应":"應","开":"開","异":"異","张":"張","归":"歸","当":"當","录":"錄","径":"徑","怀":"懷","态":"態","恤":"卹","愈":"癒","愿":"願","户":"戶","托":"託","执":"執","扫":"掃","抚":"撫","护":"護","报":"報","担":"擔","拐":"枴","拨":"撥","择":"擇","据":"據","携":"攜","数":"數","断":"斷","无":"無","旧":"舊","时":"時","显":"顯","暂":"暫","术":"術","机":"機","权":"權","条":"條","来":"來","构":"構","标":"標","栋":"棟","栏":"欄","样":"樣","档":"檔","检":"檢","楼":"樓","横":"橫","残":"殘","汇":"匯","没":"沒","注":"註","洁":"潔","测":"測","济":"濟","浏":"瀏","涤":"滌","渔":"漁","湿":"濕","滚":"滾","满":"滿","点":"點","烫":"燙","热":"熱","状":"狀","独":"獨","猫":"貓","献":"獻","环":"環","现":"現","电":"電","疗":"療","痴":"癡","监":"監","盖":"蓋","码":"碼","础":"礎","确":"確","碍":"礙","种":"種","称":"稱","稳":"穩","筛":"篩","签":"簽","简":"簡","类":"類","粤":"粵","紧":"緊","约":"約","级":"級","纯":"純","纳":"納","纸":"紙","线":"線","练":"練","组":"組","细":"細","织":"織","终":"終","绍":"紹","经":"經","结":"結","给":"給","络":"絡","统":"統","续":"續","维":"維","综":"綜","编":"編","缘":"緣","缴":"繳","网":"網","群":"羣","职":"職","联":"聯","脑":"腦","节":"節","范":"範","荣":"榮","药":"藥","获":"獲","营":"營","衔":"銜","补":"補","装":"裝","见":"見","观":"觀","规":"規","视":"視","览":"覽","计":"計","认":"認","训":"訓","议":"議","讯":"訊","记":"記","讲":"講","许":"許","论":"論","设":"設","证":"證","评":"評","识":"識","诉":"訴","诊":"診","试":"試","话":"話","询":"詢","该":"該","详":"詳","说":"説","请":"請","诺":"諾","读":"讀","调":"調","负":"負","贡":"貢","财":"財","责":"責","账":"賬","质":"質","购":"購","贴":"貼","费":"費","资":"資","赔":"賠","转":"轉","轮":"輪","轻":"輕","载":"載","较":"較","辅":"輔","输":"輸","辖":"轄","边":"邊","达":"達","过":"過","运":"運","进":"進","连":"連","适":"適","选":"選","遗":"遺","采":"採","银":"銀","铺":"鋪","销":"銷","键":"鍵","镇":"鎮","长":"長","门":"門","闭":"閉","问":"問","间":"間","队":"隊","阳":"陽","际":"際","险":"險","难":"難","页":"頁","项":"項","须":"須","顾":"顧","预":"預","领":"領","颐":"頤","频":"頻","额":"額","风":"風","饭":"飯","驻":"駐","鱼":"魚","鳌":"鰲","鸿":"鴻","黄":"黃","龄":"齡","龙":"龍"};
+function toTraditional(s){
+  return (s||"").split("").map(ch=>SIMP2TRAD[ch]||ch).join("");
+}
+function extractFromText(text){
+  const t=toTraditional((text||"").trim());
+  const values={}, specials=[], needs=[], found=[], notes=[];
+  if(!t) return {values,specials,needs,found,notes};
+
+  const addFound=(label,value)=>found.push(`${label}：${value}`);
+  const setValue=(key,value,label,display)=>{
+    if(values[key]===undefined){values[key]=value;addFound(label,display);}
+  };
+  const addSpecial=(value,display)=>{
+    if(!specials.includes(value)){specials.push(value);addFound("特殊身份",display);}
+  };
+  const addNeed=(value,display)=>{
+    if(!needs.includes(value)){needs.push(value);addFound("服務需求",display);}
+  };
+
+  const age=t.match(/(?:年齡|年齡)?\s*(\d{1,3})\s*(?:週歲|周歲|歲|歲)/);
+  if(age) setValue("age",Number(age[1]),"年齡",`${Number(age[1])}歲`);
+
+  if(/非\s*(?:廣州|廣州)(?:市)?\s*(?:戶籍|戶籍)|外地\s*(?:戶籍|戶籍)|外省\s*(?:戶籍|戶籍)/.test(t)){
+    setValue("hukou","non_gz","戶籍","非廣州市戶籍");
+  }else if(/天河(?:區|區)?[^，。；,\n]{0,6}(?:戶籍|戶籍)|(?:戶籍|戶籍)[^，。；,\n]{0,6}天河(?:區|區)?/.test(t)){
+    setValue("hukou","tianhe","戶籍","廣州市天河區戶籍");
+  }else if(/(?:廣州|廣州)(?:市)?[^，。；,\n]{0,6}(?:戶籍|戶籍)|(?:戶籍|戶籍)[^，。；,\n]{0,6}(?:廣州|廣州)(?:市)?/.test(t)){
+    setValue("hukou","guangzhou","戶籍","廣州市其他區戶籍");
+  }
+
+  if(/不在\s*(?:廣州|廣州)(?:市)?\s*(?:常住|居住)|非\s*(?:廣州|廣州)(?:市)?\s*常住/.test(t)){
+    setValue("resident","no","廣州常住","否");
+  }else if(/(?:常住|長期居住|長期居住|現居|現居|居住在|住在)\s*(?:於|於)?\s*(?:廣州|廣州)|(?:廣州|廣州)(?:市)?\s*(?:常住|居住)/.test(t)){
+    setValue("resident","yes","廣州常住","是");
+  }
+
+  if(/(?:持有|有)\s*(?:廣州|廣州)(?:市)?(?:有效)?(?:居住證|居住證)|居住證有效|居住證有效/.test(t)){
+    setValue("permit","yes","廣州居住證","有效");
+  }else if(/沒有\s*(?:廣州|廣州)(?:市)?(?:居住證|居住證)|無\s*(?:廣州|廣州)(?:市)?(?:居住證|居住證)/.test(t)){
+    setValue("permit","no","廣州居住證","沒有");
+  }
+
+  if(/(?:廣州|廣州)(?:職工|職工|居民|城鄉居民|城鄉居民)?醫保[^，。；,\n]{0,5}(?:正常|在保)|醫保待遇正常|醫保待遇正常/.test(t)){
+    setValue("medical","yes","廣州醫保待遇","正常");
+  }else if(/醫保[^，。；,\n]{0,5}(?:停保|不正常)|醫保[^，。；,\n]{0,5}(?:停保|不正常)/.test(t)){
+    setValue("medical","no","廣州醫保待遇","不正常");
+  }
+
+  const care=t.match(/(?:照護需求|照護需求|長護評估|長護評估|長護險評估|長護險評估)(?:等級|等級)?\s*(?:為|為|是|：|:)?\s*([1-5])\s*級/);
+  if(care) setValue("careLevel",care[1],"照護／長護評估",`${care[1]}級`);
+  const ability=t.match(/(?:老年人)?能力(?:評估|評估)?(?:等級|等級)?\s*(?:為|為|是|：|:)?\s*([0-5])\s*級/);
+  if(ability) setValue("abilityLevel",ability[1],"能力等級",`${ability[1]}級`);
+
+  if(/(?:生活)?不能自理[^，。；,\n]{0,12}(?:(?:6|六)\s*(?:個|個)?月以上|半年以上)|長期失能|長期失能/.test(t)){
+    setValue("careDuration","ge6","不能自理時長","已達或預期6個月以上");
+  }else if(/不能自理[^，。；,\n]{0,8}(?:少於|少於|不足)(?:6|六)\s*(?:個|個)?月/.test(t)){
+    setValue("careDuration","lt6","不能自理時長","少於6個月");
+  }
+
+  if(/孤寡/.test(t)) setValue("living","orphaned","家庭情況","孤寡");
+  else if(/獨居|獨居|一個人居住|一個人居住|單獨居住|單獨居住/.test(t)) setValue("living","alone","家庭情況","獨居");
+  else if(/空巢/.test(t)) setValue("living","empty","家庭情況","空巢");
+  else if(/純老家庭|純老家庭|家庭成員均為老人|家庭成員均為老人/.test(t)) setValue("living","elder_only","家庭情況","純老家庭");
+  else if(/與(?:子女|家人)同住|與(?:子女|家人)同住/.test(t)) setValue("living","with_family","家庭情況","與家人同住");
+
+  if(/目前(?:在)?(?:養老機構|養老機構|養老院|養老院)入住|入住(?:養老機構|養老機構|養老院|養老院)/.test(t)){
+    setValue("location","institution","目前居住地點","養老機構");
+  }else if(/目前(?:在)?(?:醫院|醫院)住院|正在住院|住院中/.test(t)){
+    setValue("location","hospital","目前居住地點","醫院");
+  }else if(/目前居家|居住在家中|住在家中|居家養老|居家養老/.test(t)){
+    setValue("location","home","目前居住地點","居家");
+  }
+
+  if(/散居特困|特困供養|特困供養|特困人員|特困人員/.test(t)) setValue("economic","special_poor","經濟身份","散居特困／特困供養");
+  else if(/低保/.test(t)) setValue("economic","dibao","經濟身份","低保");
+  else if(/低收入|低收家庭|低收老人/.test(t)) setValue("economic","low_income","經濟身份","低收入／低收");
+  else if(/經濟困難|經濟困難/.test(t)) setValue("economic","economic_difficult","經濟身份","經濟困難");
+
+  if(/重度失能/.test(t)) setValue("disability","severe","健康狀況","重度失能");
+  else if(/中度失能/.test(t)) setValue("disability","moderate","健康狀況","中度失能");
+  else if(/輕度失能|輕度失能/.test(t)) setValue("disability","mild","健康狀況","輕度失能");
+  else if(/(?:確診|確診)[^，。；,\n]{0,10}(?:失智|認知障礙|認知障礙|阿爾茲海默|阿爾茲海默|癡呆)|(?:失智|認知障礙|認知障礙|阿爾茲海默|阿爾茲海默|癡呆)[^，。；,\n]{0,10}(?:確診|確診)/.test(t)){
+    setValue("disability","dementia","健康狀況","經醫院確診失智");
+  }else if(/(?:一|1)\s*[-—至到]\s*(?:四|4)\s*級[^，。；,\n]{0,5}(?:持證|持證)?殘疾|(?:持證|持證)?殘疾[^，。；,\n]{0,5}(?:一|1)\s*[-—至到]\s*(?:四|4)\s*級/.test(t)){
+    setValue("disability","disabled_1_4","健康狀況","1-4級持證殘疾");
+  }else if(/重度殘疾|重度殘疾/.test(t)){
+    setValue("disability","severe_disabled","健康狀況","重度殘疾");
+  }
+
+  if(/計劃生育特殊家庭|計劃生育特殊家庭|計生特殊家庭|計生特殊家庭|計生特扶|計生特扶/.test(t)) addSpecial("family_planning","計生特殊家庭");
+  if(/獨生子女父母|獨生子女家庭|獨生子女光榮證|只生育一個子女|獨生子女/.test(t)) addSpecial("only_child_parent","獨生子女父母");
+  if(/男性|男長者|老伯|阿伯|爺爺|公公|先生/.test(t)) setValue("gender","male","性別","男");
+  else if(/女性|女長者|婆婆|奶奶|阿婆|女士|太太/.test(t)) setValue("gender","female","性別","女");
+  if(/優撫對象|優撫對象/.test(t)) addSpecial("preferential","優撫對象");
+  if(/烈士家屬|烈士家屬|革命烈士家屬|革命烈士家屬/.test(t)) addSpecial("martyr","烈士家屬");
+  if(/市級以上勞模|市級以上勞模|勞動模範|勞動模範/.test(t)) addSpecial("model_worker","市級以上勞模");
+  if(/殘疾軍人|殘疾軍人|老年退役軍人|老年退役軍人/.test(t)) addSpecial("veteran","殘疾軍人／退役軍人");
+  if(/為廣州作出重大貢獻|為廣州作出重大貢獻|對廣州有重大貢獻|對廣州有重大貢獻/.test(t)) addSpecial("major_contribution","為廣州作重大貢獻");
+
+  if(/照護需求評估|照護需求評估|能力評估|能力評估|失能評估|失能評估/.test(t)) addNeed("assessment","能力／照護評估");
+  if(/家庭清潔|家庭清潔|上門清潔|上門清潔|上門助潔|上門助潔|助潔|助潔|助浴|生活照料|生活照顧|陪診|陪診|代購代辦|代購代辦|上門護理|上門護理/.test(t)) addNeed("homecare","上門生活照料");
+  if(/助餐|配餐|長者飯堂|長者飯堂|送餐/.test(t)) addNeed("meal","助餐／送餐");
+  if(/日間託管|日間託管|臨時託養|臨時託養|康復護理|康復護理|康復訓練|康復訓練|康復理療|康復理療/.test(t)) addNeed("daycare","託管／康復護理");
+  if(/長壽保健金|長壽保健金|銀齡安康|銀齡安康|高齡津貼|高齡津貼/.test(t)) addNeed("allowance","津貼／保險");
+  if(/長期護理保險|長期護理保險|長護險|長護險/.test(t)) addNeed("ltci","長期護理保險");
+  if(/適老化改造|適老化改造|安裝扶手|安裝扶手|防滑改造|適老衞浴|適老衞浴/.test(t)) addNeed("renovation","居家適老化改造");
+  if(/家庭養老牀位|家庭養老牀位/.test(t)) addNeed("bed","家庭養老牀位");
+  if(/公辦養老機構|公辦養老機構|民辦養老機構|民辦養老機構|養老院入住|養老院入住|入住養老院|入住養老院/.test(t)) addNeed("institution","養老機構入住");
+  if(/平安通|緊急呼援|緊急呼援|一鍵呼叫|一鍵呼叫/.test(t)) addNeed("emergency","平安通");
+  if(/健康管理|免費體檢|免費體檢|慢病管理|醫養結合|醫養結合/.test(t)) addNeed("health","健康管理");
+
+  if(/枴杖|行動不便|行動不便|走路困難|走路困難|術後康復|術後康復|康復手術|康復手術/.test(t) && values.disability===undefined){
+    notes.push("文字提到行動能力或術後康復情況，但不能據此直接判定失能、殘疾或照護需求等級；仍需正式評估或證明資料。");
+  }
+  if(values.hukou!==undefined && values.resident===undefined){
+    notes.push("「廣州戶籍」不等同於「目前在廣州常住」，常住情況仍需另行確認。");
+  }
+  return {values,specials,needs,found,notes};
+}
+
+function fillValue(id,value,force=false){
+  const el=document.getElementById(id);
+  if(!el || value===undefined) return;
+  const isUnknown=el.tagName==="SELECT" ? el.value==="unknown" : el.value==="";
+  if(force || isUnknown) el.value=String(value);
+}
+function applyExtraction(ex,force=false){
+  Object.entries(ex.values).forEach(([key,value])=>fillValue(key,value,force));
+  ex.specials.forEach(value=>{
+    const box=document.querySelector(`input[name="special"][value="${value}"]`);
+    if(box) box.checked=true;
+  });
+  ex.needs.forEach(value=>{
+    const box=document.querySelector(`input[name="need"][value="${value}"]`);
+    if(box) box.checked=true;
+  });
+}
+function showExtraction(ex,stateText){
+  const box=document.getElementById("extractBox");
+  const chips=document.getElementById("extractChips");
+  const note=document.getElementById("extractNote");
+  const state=document.getElementById("extractState");
+  if(!ex.found.length && !ex.notes.length){box.hidden=true;return;}
+  box.hidden=false;
+  state.textContent=stateText||"";
+  chips.innerHTML=ex.found.map(x=>`<span class="extract-chip">${x}</span>`).join("");
+  if(ex.notes.length){
+    note.hidden=false;
+    note.innerHTML=ex.notes.map(x=>`• ${x}`).join("<br>");
+  }else{
+    note.hidden=true;
+    note.textContent="";
+  }
+}
+function runExtraction(force=false,stateText="已回填，可手動修正"){
+  const ex=extractFromText(document.getElementById("caseText").value);
+  applyExtraction(ex,force);
+  showExtraction(ex,stateText);
+  return ex;
+}
+function parseText(p){
+  const ex=extractFromText(p.text);
+  for(const [key,value] of Object.entries(ex.values)){
+    if(key==="age"){
+      if(p.age===null) p.age=value;
+    }else if(p[key]==="unknown"){
+      p[key]=value;
+    }
+  }
+  p.special=[...new Set([...p.special,...ex.specials])];
+  p.needs=[...new Set([...p.needs,...ex.needs])];
+  return p;
+}
+function renderResults(){
+  let p=parseText(profile());
+  let filtered=policies;
+  if(p.needs.length) filtered=policies.filter(x=>x.category.some(c=>p.needs.includes(c)));
+  const items=[];
+  for(const policy of filtered){
+    const r=policy.evaluate(p);
+    if(r) items.push({policy,r});
+  }
+  items.sort((a,b)=>{
+    const s={ok:0,need:1};
+    return s[a.r.status]-s[b.r.status] || a.policy.no.localeCompare(b.policy.no);
+  });
+
+  const root=document.getElementById("results");
+  document.getElementById("resultCount").textContent=`匹配結果 · ${items.length}項`;
+  if(!items.length){
+    root.innerHTML=`<div class="empty"><div><div class="empty-icon">!</div><strong>暫未找到可判斷的政策</strong><p>現有資料不足，或已選服務與個案條件不符。請補充年齡、戶籍、常住地及服務需求。</p><div class="disclaimer">${DISCLAIMER}</div></div></div>`;
+    return;
+  }
+  const ok=items.filter(x=>x.r.status==="ok").length;
+  const need=items.filter(x=>x.r.status==="need").length;
+  root.innerHTML=`
+    <div class="summary">共找到 <strong>${items.length}</strong> 項相關政策，其中 <strong>${ok}</strong> 項現有資料較完整，<strong>${need}</strong> 項仍需補充資料後判斷。</div>
+    ${items.map(({policy,r})=>`
+      <article class="result-card">
+        <div class="card-top">
+          <div class="card-title">${policy.no} · ${policy.name}</div>
+          <span class="tag ${r.status}">${r.status==="ok"?"可能適用":"資料不足"}</span>
+        </div>
+        <div class="card-desc">${policy.desc}</div>
+        ${r.basis.length?`<div class="section-label">根據個案的判斷依據</div><ul>${r.basis.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}
+        ${r.benefits.length?`<div class="section-label">可能申請／享受內容</div><ul>${r.benefits.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}
+        ${r.missing.length?`<div class="section-label">仍需確認</div><ul class="missing">${r.missing.map(x=>`<li>${x}</li>`).join("")}</ul>`:""}
+        <div class="route"><strong>辦理／諮詢：</strong>${policy.route}</div>
+        <button class="detail-btn" type="button" onclick="openPolicyDetail('${policy.id}')">查看政策詳情與聯繫方式</button>
+      </article>
+    `).join("")}
+    <div class="disclaimer">${DISCLAIMER}</div>
+  `;
+}
+function renderLibrary(q=""){
+  const query=q.trim().toLowerCase();
+  const list=policies.filter(p=>`${p.name} ${p.desc} ${p.keywords} ${p.route}`.toLowerCase().includes(query));
+  document.getElementById("libraryCount").textContent=`${list.length}項政策`;
+  document.getElementById("policyGrid").innerHTML=list.map(p=>`
+    <article class="policy-card" onclick="openPolicyDetail('${p.id}')" role="button" tabindex="0"
+      onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openPolicyDetail('${p.id}')}">
+      <div class="policy-no">POLICY ${p.no}</div>
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <div class="policy-meta"><strong>辦理／諮詢：</strong>${p.route}</div>
+      <button class="detail-btn" type="button" onclick="event.stopPropagation();openPolicyDetail('${p.id}')">查看政策詳情</button>
+    </article>
+  `).join("");
+}
+
+function detailList(title,items){
+  if(!items || !items.length) return "";
+  return `<section class="detail-section"><h4>${title}</h4><ul>${items.map(x=>`<li>${x}</li>`).join("")}</ul></section>`;
+}
+function openPolicyDetail(id){
+  const p=policies.find(x=>x.id===id);
+  const d=policyDetails[id];
+  if(!p || !d) return;
+  document.getElementById("detailKicker").textContent=`POLICY ${p.no}`;
+  document.getElementById("detailTitle").textContent=p.name;
+  const contacts=(d.contacts||[]).map(c=>`
+    <div class="contact-item ${c.missing?"contact-missing":""}">
+      <div class="contact-name">${c.name}</div>
+      <div class="contact-line"><strong>${c.type}：</strong>${c.detail}</div>
+    </div>`).join("");
+  const sources=(policySources[id]||[]).map(s=>`
+    <div class="source-card">
+      <div class="source-title">${s.title}</div>
+      <div class="source-meta">發佈日期：${s.date}　來源／發佈單位：${s.issuer}</div>
+      <span class="source-status ${s.warning?"warn":""}">${s.status}</span>
+    </div>`).join("");
+  document.getElementById("detailBody").innerHTML=`
+    ${policyAlerts[id]?`<div class="policy-alert">${policyAlerts[id]}</div>`:""}
+    <section class="detail-section">
+      <h4>政策介紹</h4>
+      <p>${d.intro}</p>
+    </section>
+    ${detailList("申請／適用條件",d.conditions)}
+    ${detailList("申請材料",d.materials)}
+    ${detailList("辦理流程與時限",d.process)}
+    ${detailList("可申請服務內容",d.services)}
+    ${detailList("資助或保障標準",d.subsidy)}
+    <section class="detail-section">
+      <h4>可申請單位及聯繫方式</h4>
+      <div class="contact-list">${contacts}</div>
+    </section>
+    <section class="detail-section">
+      <h4>檔案來源及版本</h4>
+      ${sources || '<p>暫未登記來源資料。</p>'}
+    </section>
+    <div class="source-note">
+      本網頁只整理當前已導入檔案。檔案沒有提供的具體電話、地址、機構名單、申請材料或辦理細節，均明確標註為“未載明／仍需補充”，不使用外部資料自行補寫。不同日期資料存在差異時，會保留來源日期並作提示。<br><br>
+      ${DISCLAIMER}
+    </div>`;
+  const modal=document.getElementById("detailModal");
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden","false");
+  document.body.classList.add("modal-open");
+}
+function closePolicyDetail(){
+  const modal=document.getElementById("detailModal");
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("modal-open");
+}
+document.getElementById("detailClose").addEventListener("click",closePolicyDetail);
+document.getElementById("detailModal").addEventListener("click",e=>{
+  if(e.target.id==="detailModal") closePolicyDetail();
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") closePolicyDetail();
+});
+
+
+function renderInstitutions(){
+  const q=(document.getElementById("institutionSearch")?.value||"").trim().toLowerCase();
+  const nature=document.getElementById("institutionNature")?.value||"";
+  const list=institutions.filter(x=>{
+    const hay=`${x.name} ${x.address} ${x.nature} ${x.phone}`.toLowerCase();
+    return (!q || hay.includes(q)) && (!nature || x.nature===nature);
+  });
+  document.getElementById("institutionCount").textContent=`共 ${list.length} 家機構`;
+  document.getElementById("institutionGrid").innerHTML=list.map(x=>`
+    <article class="institution-card">
+      <div class="policy-no">機構 ${String(x.id).padStart(2,"0")}</div>
+      <h3>${x.name}</h3>
+      <div class="institution-tags">
+        <span class="institution-tag">${x.nature}</span>
+        <span class="institution-tag">${x.beds}張牀位</span>
+      </div>
+      <div class="institution-line"><strong>地址：</strong>${x.address}</div>
+      <div class="institution-line"><strong>聯繫電話：</strong>${x.phone}</div>
+      <a class="phone-link" href="tel:${x.phone.replace(/-/g,"")}">撥打電話</a>
+    </article>`).join("");
+}
+document.getElementById("institutionSearch").addEventListener("input",renderInstitutions);
+document.getElementById("institutionNature").addEventListener("change",renderInstitutions);
+renderInstitutions();
+
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById(btn.dataset.view).classList.add("active");
+}));
+document.getElementById("matchBtn").addEventListener("click",()=>{
+  runExtraction(false,"已自動回填並用於本次匹配");
+  renderResults();
+});
+document.getElementById("extractBtn").addEventListener("click",()=>{
+  runExtraction(true,"已重新識別並回填");
+});
+let extractTimer=null;
+document.getElementById("caseText").addEventListener("input",()=>{
+  clearTimeout(extractTimer);
+  extractTimer=setTimeout(()=>runExtraction(false,"已自動識別；請核對下方欄位"),450);
+});
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  document.querySelectorAll("input[type=checkbox]").forEach(x=>x.checked=false);
+  document.querySelectorAll("select").forEach(x=>x.selectedIndex=0);
+  document.querySelectorAll("input[type=number],textarea").forEach(x=>x.value="");
+  document.getElementById("results").innerHTML=`<div class="empty"><div><div class="empty-icon">⌕</div><strong>尚未進行匹配</strong><p>填寫左側資料後，系統會列出可能適用的政策、判斷依據及缺失資料。</p></div></div>`;
+  document.getElementById("resultCount").textContent="匹配結果";
+  document.getElementById("extractBox").hidden=true;
+  document.getElementById("extractChips").innerHTML="";
+  document.getElementById("extractNote").hidden=true;
+});
+document.getElementById("copyBtn").addEventListener("click",async()=>{
+  const text=document.getElementById("results").innerText;
+  try{await navigator.clipboard.writeText(text); alert("結果已複製");}
+  catch(e){alert("瀏覽器未允許自動複製，請手動選取結果。");}
+});
+document.getElementById("policySearch").addEventListener("input",e=>renderLibrary(e.target.value));
+renderLibrary();
+</script>
+</body>
+</html>
